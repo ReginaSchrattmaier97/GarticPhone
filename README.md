@@ -1,6 +1,12 @@
 # GarticPhone
 
+A clone of the multiplayer game Gartic Phone made with Angular and Firebase as a realtime server.
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.2.9.
+
+## Team:  
+- Julia Hainz (s2010629004)
+- Regina Schrattmaier(s2010629009) 
 
 ## Development server
 
