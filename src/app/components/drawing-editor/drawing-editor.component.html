@@ -1,0 +1,26 @@
+<mat-card class="container">
+  <div class="row">
+    <div id="drawing-board">
+      <canvas #canvas></canvas>
+    </div>
+    <div id="drawing-board-settings">
+      <div class="color-buttons-container">
+        <button mat-mini-fab (click)="setColor('#000000')"  class="black-button"></button>
+        <button mat-mini-fab (click)="setColor('#FF0000')"  class="red-button"></button>
+        <button mat-mini-fab (click)="setColor('#00FF00')"  class="green-button"></button>
+        <button mat-mini-fab (click)="setColor('#0000FF')"  class="blue-button"></button>
+        <button mat-mini-fab (click)="setColor('#FFFF00')"  class="yellow-button"></button>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <button mat-raised-button color="primary" (click)="clearCanvas()" >Clear</button>
+  </div>
+
+</mat-card>
+<mat-card id="imageBase64-container" class="container">
+  <h3>Base64 Image</h3>
+  <div class="row" id="imageBase64">
+    <img #img  class="base64Img">
+  </div>
+</mat-card>

@@ -1,0 +1,64 @@
+canvas,
+.base64Img {
+  border: 1px solid #000;
+  background-color: #fff;
+  border-radius: 5px;
+}
+
+.color-buttons-container {
+  width: 20%;
+}
+
+.row {
+  display: flex;
+}
+
+div#drawing-board {
+  display: flex;
+  flex-direction: column;
+  cursor: url("../../../assets/images/pencil-alt-32x32.png"), auto;
+}
+
+.mat-raised-button {
+  margin: 20px 0;
+}
+
+#imageBase64-container {
+  margin-top: 20px;
+  background-color: #222;
+}
+
+.container {
+  width: 90%;
+  margin: auto;
+
+  #drawing-board-settings {
+    display: flex;
+    justify-content: center;
+    width: 10%;
+
+    .color-buttons-container {
+      width: 50%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      .black-button {
+        background-color: #000000;
+      }
+
+      .red-button {
+        background-color: #ff0000;
+      }
+
+      .green-button {
+        background-color: #00ff00;
+      }
+
+      .blue-button {
+        background-color: #0000ff;
+      }
+    }
+  }
+}

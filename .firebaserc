@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "garticphone-e5bed": {
+      "hosting": {
+        "gartic-phone": [
+          "garticphone-e5bed"
+        ]
+      }
+    }
+  }
+}
