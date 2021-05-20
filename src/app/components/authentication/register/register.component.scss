@@ -1,0 +1,16 @@
+.infos{
+  font-size: 0.6rem;
+  color: black;
+}
+
+.avatar{
+  display: flex;
+  justify-content: space-evenly;
+  img{
+    width: 10%;
+    height: auto;
+  }
+  span{
+    font-size: 0.8rem;
+  }
+}

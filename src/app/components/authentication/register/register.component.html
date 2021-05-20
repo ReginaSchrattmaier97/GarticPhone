@@ -17,6 +17,18 @@
           <mat-icon matSuffix class="material-icons-round">password</mat-icon>
         </mat-form-field>
     </div>
+    <div class="row">
+      <mat-form-field>
+        <mat-select placeholder="Choose your avatar" formControlName="avatar">
+          <mat-option *ngFor="let avatar of avatars" [value]="avatar.value">
+            <div class="avatar">
+              <img src="{{avatar.value}}">
+              <span>{{avatar.viewValue}}</span>
+           </div>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      </div>
       <div class="row">
           <button mat-raised-button type="submit" color="primary">Login</button>
         </div>
@@ -26,6 +38,7 @@
   <mat-card-footer>
     Already have an account? log in
     <a href="/login">here</a>
+    <div class="infos">Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
   </mat-card-footer>
   </mat-card>
 
