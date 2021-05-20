@@ -21,9 +21,30 @@ import { RegisterComponent } from './components/authentication/register/register
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { HeaderComponent } from './components/template/header/header.component';
+import { FooterComponent } from './components/template/footer/footer.component';
+import { GameOverviewComponent } from './components/game/game-overview/game-overview.component';
+import { JoinGameComponent } from './components/game/join-game/join-game.component';
+import { StartGameComponent } from './components/game/start-game/start-game.component';
+import { WaitForGameComponent } from './components/game/wait-for-game/wait-for-game.component';
+import { TextInputComponent } from './components/text-input/text-input.component';
+import { FinalPresentationComponent } from './components/game/final-presentation/final-presentation.component';
 
 @NgModule({
-  declarations: [AppComponent, DrawingEditorComponent, LoginComponent, RegisterComponent],
+  declarations: [
+    AppComponent,
+    DrawingEditorComponent,
+    LoginComponent,
+    RegisterComponent,
+    HeaderComponent,
+    FooterComponent,
+    GameOverviewComponent,
+    JoinGameComponent,
+    StartGameComponent,
+    WaitForGameComponent,
+    TextInputComponent,
+    FinalPresentationComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -41,7 +62,7 @@ import { MatSelectModule } from '@angular/material/select';
     ReactiveFormsModule,
     MatIconModule,
     MatInputModule,
-    MatSelectModule
+    MatSelectModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -1,0 +1,16 @@
+ul {
+  list-style-type: none;
+  overflow: hidden;
+  padding: 0;
+}
+
+li {
+  transform: translateX(-100%);
+  transition: transform 0.5s, opacity 2s;
+  opacity: 0;
+}
+
+.show {
+  opacity: 1;
+  transform: translateX(0%);
+}
