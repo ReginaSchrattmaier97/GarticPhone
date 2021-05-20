@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/auth';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
+import { DatabaseService } from 'src/app/services/database/database.service';
 import { CreateUser } from 'src/app/shared/create-user';
 import {AuthenticationService} from '../../../../app/services/authentication/authentication.service';
 import {Avatar} from '../../../../app/shared/types/avatar'
@@ -13,8 +15,8 @@ import {Avatar} from '../../../../app/shared/types/avatar'
 })
 export class RegisterComponent implements OnInit {
 
-  registerForm: FormGroup;
-  user = CreateUser.empty();
+  public registerForm: FormGroup;
+  public user = CreateUser.empty();
 
   avatars: Avatar[] = [
     {value: '../../../../assets/avatars/001-scientist.svg', viewValue: 'Scientist'},
@@ -29,17 +31,21 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit() {
     this.registerForm = this.form.group({
+      firstName:['', Validators.required],
+      lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
       avatar: ['', Validators.required]
     });
 
+
   }
 
   signUpUser(event) {
     event.preventDefault();
-    const logInData = this.registerForm.value;
-    this.authService.SignUp(logInData.email, logInData.password);
+    console.log("in signup user register compnent");
+    this.user = this.registerForm.value;
+    this.authService.SignUp(this.user);
   }
 
 }

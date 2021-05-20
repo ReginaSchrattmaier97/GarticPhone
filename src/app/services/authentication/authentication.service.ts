@@ -1,14 +1,22 @@
 import {Injectable} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {Router} from '@angular/router';
+import { DatabaseService} from '../database/database.service';
+import { first } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
 
+  public firebaseUser;
 
-  constructor(public firebaseAuth: AngularFireAuth, private router: Router) {
+
+  constructor(public firebaseAuth: AngularFireAuth, private router: Router, private dbService:DatabaseService) {
+    this.firebaseAuth.authState.subscribe( authState => {
+      this.firebaseUser = authState;
+    });
+
   }
 
   SignIn(email, password) {
@@ -21,8 +29,18 @@ export class AuthenticationService {
       });
   }
 
-  SignUp(email, password) {
-    return this.firebaseAuth.createUserWithEmailAndPassword(email, password)
+  isLoggedIn() {
+    return this.firebaseAuth.authState.pipe(first()).toPromise();
+ }
+
+
+
+SignUp(user) {
+    console.log("in signuo service");
+    return this.firebaseAuth.createUserWithEmailAndPassword(user.email, user.password)
+    .then(() =>{
+       this.saveUserInDB(user);
+    })
       .then(() => {
         this.router.navigate(['/login']);
       })
@@ -50,4 +68,19 @@ export class AuthenticationService {
         this.router.navigate(['/authentication']);
       });
   }
+
+
+async saveUserInDB(user) {
+  const userFirebase = await this.isLoggedIn()
+  if (userFirebase) {
+    console.log("logged In");
+      user.id = userFirebase.uid;
+      console.log(user.id);
+
+      this.dbService.saveUser(user);
+      console.log("saved in db");
+  } else {
+    // do something else
+ }
+}
 }

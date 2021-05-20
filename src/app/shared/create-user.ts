@@ -12,5 +12,5 @@ export class CreateUser {
           rawUser.lastName,
           rawUser.imageUrl
       );
-      }
+    }
   }
