@@ -26,7 +26,7 @@ body {
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 $drawing-editor-primary: mat-palette($mat-deep-purple);
-$drawing-editor-accent: mat-palette($mat-amber, A200, A100, A400);
+$drawing-editor-accent: mat-palette($mat-amber, A200, A100, A400, A700);
 
 // The warn palette is optional (defaults to red).
 $drawing-editor-warn: mat-palette($mat-red);
@@ -57,9 +57,41 @@ $drawing-editor-dark-theme: mat-dark-theme(
 html,
 body {
   height: 100%;
+  width: 100%;
 }
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
   background-color: #000;
+}
+app-login, app-register{
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .authentication-card{
+    width: 40%;
+    padding: 3%;
+    align-self: center;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+        .container-inptFields{
+          width: fit-content;
+        }
+      }
+  .row{
+    display: flex;
+    align-content: center;
+    button{
+      width: 100%;
+    }
+  }
+}
+a{
+  color: mat-color($mat-amber, A700);
 }
