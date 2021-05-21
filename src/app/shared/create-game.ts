@@ -1,14 +1,9 @@
 import { Game } from "./types/game";
 
-export class CreateUser {
+export class CreateGame {
 
   static empty():Game{
       return new Game("",[]);
   }
-      static fromObject(rawUser:any) : Game{
-      return new Game(
-          rawUser.id,
-          rawUser.rounds
-      );
-    }
+
   }
