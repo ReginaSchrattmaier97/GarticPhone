@@ -22,7 +22,7 @@ const routes: Routes = [
   { path: 'join', component: JoinGameComponent },
   { path: 'game', component: GameOverviewComponent },
   { path: 'start', component: StartGameComponent },
-  { path: 'wait', component: WaitForGameComponent },
+  { path: 'wait/:id', component: WaitForGameComponent },
   { path: 'results', component: FinalPresentationComponent },
   { path: 'gamescreen', component: GameScreenComponent },
 ];

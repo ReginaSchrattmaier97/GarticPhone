@@ -6,17 +6,9 @@
         </div>
         <p>Other players who also joined: </p>
         <ul class="list-none">
-            <li class="flex justify-center">
-                <img class="avatar" src="../../../../assets/avatars/001-scientist.svg">
-                <p class="ml-4">Player 1</p>
-            </li>
-            <li class="flex justify-center">
-                <img class="avatar" src="../../../../assets/avatars/001-scientist.svg">
-                <p class="ml-4">Player 2</p>
-            </li>
-            <li class="flex justify-center">
-                <img class="avatar" src="../../../../assets/avatars/001-scientist.svg">
-                <p class="ml-4">Player 3</p>
+            <li *ngFor="let user of joinedUsers" class="flex justify-center">
+                <img class="avatar" src="{{user.imageUrl}}">
+                <p class="ml-4">{{user.firstName}} {{user.lastName}}</p>
             </li>
         </ul>
     </div>
