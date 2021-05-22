@@ -7,9 +7,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TextInputComponent implements OnInit {
 
+  public textInputFromChild = '';
+  public textInput='';
+
   constructor() { }
 
   ngOnInit(): void {
+
+
   }
+
+  setText(text){
+    console.log(text);
+    this.textInput = text;
+  }
+
+
+
+
 
 }

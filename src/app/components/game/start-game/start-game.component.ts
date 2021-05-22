@@ -17,4 +17,5 @@ export class StartGameComponent implements OnInit {
     this.router.navigate(['gamescreen']);
   }
 
+
 }

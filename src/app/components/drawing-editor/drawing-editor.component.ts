@@ -8,7 +8,7 @@ import {
   EventEmitter,
   HostListener,
 } from '@angular/core';
-import { fromEvent } from 'rxjs';
+import { fromEvent, Observable } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { switchMap, takeUntil, pairwise } from 'rxjs/operators';
 
@@ -28,6 +28,10 @@ export class DrawingEditorComponent implements AfterViewInit {
   public context: CanvasRenderingContext2D;
   private map = new Map();
   @HostListener('window:resize', ['$event'])
+
+  public drawingDataFromChild = "";
+
+
   onResize() {
     let temp = this.context.getImageData(0, 0, this.width, this.height);
     this.context.canvas.width = window.innerWidth * 0.7;
@@ -52,10 +56,15 @@ export class DrawingEditorComponent implements AfterViewInit {
     this.captureEvents(canvasEl);
     const imageEl: HTMLImageElement = this.img.nativeElement;
 
-    this.drawingChanged.pipe(delay(500)).subscribe((base64) => {
-      imageEl.src = base64;
-    });
-  }
+    // this.drawingChanged.pipe().subscribe((base64) => {
+    //   imageEl.src = base64;
+    //   this.drawingDataFromChild = base64;
+    // });
+
+
+    this.drawingDataFromChild = this.submitRound(canvasEl);
+}
+
   private captureEvents(canvasEl: HTMLCanvasElement) {
     fromEvent<MouseEvent>(canvasEl, 'mousedown')
       .pipe(
@@ -113,5 +122,11 @@ export class DrawingEditorComponent implements AfterViewInit {
     this.context.clearRect(0, 0, this.width, this.height);
     this.drawingChanged.emit('');
     this.map.clear();
+  }
+
+
+  public submitRound(canvasEl){
+    let base64 = canvasEl.toDataURL();
+    return base64;
   }
 }

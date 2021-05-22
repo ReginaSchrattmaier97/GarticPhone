@@ -70,6 +70,17 @@ SignUp(user) {
   }
 
 
+  async getCurrentUserId(){
+    const userFirebase = await this.isLoggedIn();
+    if(userFirebase){
+        return userFirebase.uid;
+    }
+    else{
+      console.log('No current user available');
+    }
+  }
+
+
 async saveUserInDB(user) {
   const userFirebase = await this.isLoggedIn()
   if (userFirebase) {
