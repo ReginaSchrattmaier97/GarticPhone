@@ -26,6 +26,15 @@ export class LoginComponent implements OnInit {
       event.preventDefault();
       const logInData = this.loginForm.value;
       this.authService.SignIn(logInData.email, logInData.password);
+      this.saveCurrentUser();
+
+  }
+
+  async saveCurrentUser(){
+    let currentUser = await this.authService.isLoggedIn();
+    let currentUserID = currentUser.uid;
+    console.log(currentUserID);
+    localStorage.setItem('currentUserId', currentUserID);
   }
 
 }

@@ -22,6 +22,6 @@ export class StartGameComponent implements OnInit {
   }
 
   routeToGame() {
-    this.router.navigate(['gamescreen']);
+    this.router.navigate([`gamescreen/${this.gamecode}`]);
   }
 }

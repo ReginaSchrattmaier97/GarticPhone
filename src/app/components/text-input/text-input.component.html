@@ -2,7 +2,7 @@
     <div class="text-center">
         <p class="mb-8">Please enter a random sentence for others to draw!</p>
         <mat-form-field appearance="legacy">
-            <input matInput type="text" placeholder="Random Sentence"  formControlName="sentence" #text>
+            <input matInput type="text" placeholder="Random Sentence" value="too slow!" formControlName="sentence" #text>
             <mat-icon matSuffix class="material-icons-round"></mat-icon>
         </mat-form-field>
         <button class="ml-4" mat-raised-button color="primary" (click)="setText(text.value)">Submit</button>

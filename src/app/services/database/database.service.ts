@@ -96,9 +96,9 @@ export class DatabaseService {
       });
   }
 
-  public saveTextsToRound(gameid: String, roundCounter: number, textRound: TextRound){
-    const itemRef = this.db.object('/games/' + gameid + '/rounds/' + roundCounter + '/textRounds/');
-    return itemRef.set(textRound)
+  public saveTextsToRound(gameid: String, roundCounter: number, textRound: TextRound, userId: string){
+    const itemRef = this.db.list('/games/' + gameid + '/rounds/' + roundCounter + '/textRounds/');
+    return itemRef.set(userId, textRound)
       .then(() => {
         console.log('saved Text Round');
       })
@@ -108,7 +108,7 @@ export class DatabaseService {
 
   }
 
-  public getTextsofRound(gameid: String, roundCounter: number){
+  public getTextsofRound(gameid: String, roundCounter: number):Promise<Array<TextRound>>{
     const itemRef = this.db
     .list('/games/' + gameid + '/rounds/' + roundCounter + '/textRounds/')
     .snapshotChanges()
@@ -116,10 +116,14 @@ export class DatabaseService {
       this.textList = [];
       textSnapshot.forEach((textSnapshot) => {
         let text= textSnapshot.payload.toJSON();
+        console.log("text");
+        console.log(text);
         this.textList.push(text);
       });
+      console.log(this.textList);
       return this.textList;
     });
+    console.log(this.textList);
   return this.textList;
 }
 

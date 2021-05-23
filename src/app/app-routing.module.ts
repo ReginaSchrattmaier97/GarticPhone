@@ -23,7 +23,7 @@ const routes: Routes = [
   { path: 'start/:id', component: StartGameComponent },
   { path: 'wait/:id', component: WaitForGameComponent },
   { path: 'results', component: FinalPresentationComponent },
-  { path: 'gamescreen', component: GameScreenComponent },
+  { path: 'gamescreen/:id', component: GameScreenComponent },
 ];
 
 @NgModule({
