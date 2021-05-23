@@ -2,16 +2,16 @@
     <div class="text-center">
         <p class="mb-8">Game Screen</p>
     </div>
-    <div ngIf*="isDrawingRound">
-      <div ngIf*="currentDrawingRound">
+    <div *ngIf="isDrawingRound">
+      <div *ngIf="currentDrawingRound">
         <p>{{currentDrawingRound.data}}</p>
       </div>
       <app-drawing-editor></app-drawing-editor>
     </div>
-    <div ngIf*="isTextRound">
+    <div *ngIf="isTextRound">
       <app-text-input></app-text-input>
     </div>
-    <div ngIf*="">
+    <div *ngIf="">
       <app-final-presentation></app-final-presentation>
     </div>
 </mat-card>

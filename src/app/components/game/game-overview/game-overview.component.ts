@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { CreateGameService } from 'src/app/services/create-game/create-game.service';
 
 @Component({
@@ -8,7 +9,7 @@ import { CreateGameService } from 'src/app/services/create-game/create-game.serv
 })
 export class GameOverviewComponent implements OnInit {
 
-  constructor( private createGameService : CreateGameService) {
+  constructor( private createGameService : CreateGameService, private router: Router) {
 
 
   }
@@ -17,7 +18,7 @@ export class GameOverviewComponent implements OnInit {
   }
 
   createGame(){
-    this.createGameService.createGame();
+    let id = this.createGameService.createGame();
   }
 
 }

@@ -37,7 +37,6 @@ export class DatabaseService {
       .set(game)
       .then(() => {
         console.log('created new Game');
-        this.router.navigate(['start']);
       })
       .catch((error) => {
         console.error(error + 'no game created');

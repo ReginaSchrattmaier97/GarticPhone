@@ -62,8 +62,8 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.dataFromDrawingEditor = this.drawingEditor.drawingDataFromChild;
-    this.dataFromTextInput = this.textInput.textInputFromChild;
+
+
 
     //init round
     // if(this.roundCounter == 0){
@@ -78,6 +78,8 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
 
 
     for (let i = 1; i<this.roundNumber; i++) {
+
+      console.log("Round"+i);
 
     //drawing Round----------------------
 
@@ -95,6 +97,8 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
        let prevText = prevTextRound.text;
        console.log(prevText);
 
+
+
       //create Round
         this.createDrawingRound();
 
@@ -106,6 +110,8 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
       setTimeout(() => {
        //finished drawing
 
+       this.dataFromDrawingEditor = this.drawingEditor.drawingDataFromChild;
+
        //TODO push on author array------------------>
 
       //this.rounds.push(this.currentDrawingRound);
@@ -115,10 +121,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
 
       //++this.roundCounter;
       this.previouseRound = this.currentDrawingRound;
-      }, 1000);
-
-
-
+      }, 30000);
     }
 
 
@@ -127,14 +130,20 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
       this.isTextRound = true;
       this.isDrawingRound = false;
 
-      this.createTextRound();
+
+      console.log("in first Round");
 
       if(this.roundCounter != 1){
+        setTimeout(() => {
+        this.createTextRound();
         this.currentTextRound.data = this.previouseRound.data;
+        },30000);
       }
 
       setTimeout(() => {
 
+      this.dataFromTextInput = this.textInput.textInputFromChild;
+      this.createTextRound();
       //this.rounds.push(textRound);
 
       //TODO push on author array------------------>
@@ -145,7 +154,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
       //this.textinputs.push(this.dataFromTextInput);
 
       //++this.roundCounter;
-      }, 1000)
+      }, 30000)
 
     }
   }
