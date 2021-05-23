@@ -3,6 +3,9 @@
         <p class="mb-8">Game Screen</p>
     </div>
     <div ngIf*="isDrawingRound">
+      <div ngIf*="currentDrawingRound">
+        <p>{{currentDrawingRound.data}}</p>
+      </div>
       <app-drawing-editor></app-drawing-editor>
     </div>
     <div ngIf*="isTextRound">

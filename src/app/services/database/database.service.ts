@@ -3,13 +3,18 @@ import { AngularFireDatabase } from '@angular/fire/database';
 import { Injectable } from '@angular/core';
 import { User } from 'src/app/shared/types/user';
 import { Game } from 'src/app/shared/types/game';
+import { RoundOfGame } from 'src/app/shared/types/round-of-game';
 import { Router } from '@angular/router';
+import { TextRound } from 'src/app/shared/types/textRound';
+import { DrawingRound } from 'src/app/shared/types/drawingRound';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DatabaseService {
   public userList;
+  public textList;
+  public drawingList;
 
   constructor(private db: AngularFireDatabase, private router: Router) {}
 
@@ -80,4 +85,68 @@ export class DatabaseService {
         });
       });
   }
+
+  public saveImagesToRound(gameid: String, roundCounter: number, drawingRound: DrawingRound){
+    const itemRef = this.db.object('/games/' + gameid + '/rounds/' + roundCounter + '/drawingRounds/');
+    return itemRef.set(drawingRound)
+      .then(() => {
+        console.log('saved drawing Round');
+      })
+      .catch((error) => {
+        console.error(error + 'no drawing saved');
+      });
+  }
+
+  public saveTextsToRound(gameid: String, roundCounter: number, textRound: TextRound){
+    const itemRef = this.db.object('/games/' + gameid + '/rounds/' + roundCounter + '/textRounds/');
+    return itemRef.set(textRound)
+      .then(() => {
+        console.log('saved Text Round');
+      })
+      .catch((error) => {
+        console.error(error + 'no text saved');
+      });
+
+  }
+
+  public getTextsofRound(gameid: String, roundCounter: number){
+    const itemRef = this.db
+    .list('/games/' + gameid + '/rounds/' + roundCounter + '/textRounds/')
+    .snapshotChanges()
+    .forEach((textSnapshot) => {
+      this.textList = [];
+      textSnapshot.forEach((textSnapshot) => {
+        let text= textSnapshot.payload.toJSON();
+        this.textList.push(text);
+      });
+      return this.textList;
+    });
+  return this.textList;
+}
+
+
+public getImagesofRound(gameid: String, roundCounter: number){
+  const itemRef = this.db
+  .list('/games/' + gameid + '/rounds/' + roundCounter + '/drawingRounds/')
+  .snapshotChanges()
+  .forEach((drawingSnapshot) => {
+    this.drawingList = [];
+    drawingSnapshot.forEach((drawingSnapshot) => {
+      let drawing= drawingSnapshot.payload.toJSON();
+      this.drawingList.push(drawing);
+    });
+    return this.drawingList;
+  });
+return this.drawingList;
+}
+
+
+//TODO
+//--update TextRound --> update field assigned to user
+//--update ImageRound --> update field assigned to user
+
+
+
+
+
 }
