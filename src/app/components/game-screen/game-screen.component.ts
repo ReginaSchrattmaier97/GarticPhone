@@ -25,6 +25,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
   @ViewChild(TextInputComponent) textInput: TextInputComponent;
 
   @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
+  @ViewChild('containerDraw', {read: ViewContainerRef}) containerDraw: ViewContainerRef;
 
   //@ViewChild(GameHostDirective, {static: true}) appGameHost!: GameHostDirective;
 
@@ -143,14 +144,25 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
     return this.currentTextRound;
   }
 
-  loadComponent(component) {
+  loadTextComponent() {
     if(this.ref){
       this.ref.destroy();
     }
-    const factory = this.componentFactoryResolver.resolveComponentFactory(component);
+    const factory = this.componentFactoryResolver.resolveComponentFactory(TextInputComponent);
     this.ref = this.container.createComponent(factory);
     this.ref.changeDetectorRef.detectChanges();
   }
+
+  loadDrawComponent() {
+    if(this.ref){
+      this.ref.destroy();
+    }
+    const factory = this.componentFactoryResolver.resolveComponentFactory(DrawingEditorComponent);
+    this.ref = this.containerDraw.createComponent(factory);
+    this.ref.changeDetectorRef.detectChanges();
+  }
+
+
 
 
 
@@ -198,8 +210,8 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
 
 
       if(this.isDrawingRound){
-        //this.detachView(TextInputComponent);
-        this.loadComponent(DrawingEditorComponent);
+
+        this.loadDrawComponent();
         console.log("loaded Drawing Screen");
       }
 
@@ -264,7 +276,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
       if(this.isTextRound){
         //this.detachView(TextInputComponent);
         console.log(" in this.loadComponent");
-        this.loadComponent(TextInputComponent);
+        this.loadTextComponent();
         console.log(" loades componend");
       }
 
