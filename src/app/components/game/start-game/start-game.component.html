@@ -7,19 +7,11 @@
         <p class="gameId">Gamecode: {{gamecode}}</p>
         <p>Players joined</p>
         <ul class="list-none">
-            <li class="flex justify-center">
-                <img class="avatar" src="../../../../assets/avatars/001-scientist.svg">
-                <p class="ml-4">Player 1</p>
-            </li>
-            <li class="flex justify-center">
-                <img class="avatar" src="../../../../assets/avatars/001-scientist.svg">
-                <p class="ml-4">Player 2</p>
-            </li>
-            <li class="flex justify-center">
-                <img class="avatar" src="../../../../assets/avatars/001-scientist.svg">
-                <p class="ml-4">Player 3</p>
+            <li *ngFor="let user of this.allUsersInGame" class="flex justify-center">
+                <img *ngIf="user[0]" class="avatar" src="{{user[0]}}">
+                <p class="ml-4">{{user[2]}}</p>
             </li>
         </ul>
-        <button mat-raised-button color="primary" class="m-4" (click)="routeToGame()">Start Game</button>
+        <button mat-raised-button color="primary" class="m-4" (click)="startGame()">Start Game</button>
     </div>
 </mat-card>

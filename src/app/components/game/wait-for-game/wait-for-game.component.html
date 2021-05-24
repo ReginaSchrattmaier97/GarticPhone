@@ -7,13 +7,10 @@
         <p>Host: </p>
         <!-- Display Host -->
         <p>Other players who also joined: </p>
-
-        <div *ngIf="joinedUsers">test {{joinedUsers}}</div>
-
         <ul class="list-none">
-            <li *ngFor="let user of joinedUsers" class="flex justify-center">
-                <img class="avatar" src="{{user.imageUrl}}">
-                <p class="ml-4">{{user.firstName}} {{user.lastName}}</p>
+            <li *ngFor="let user of this.allUsersInGame" class="flex justify-center">
+                <img *ngIf="user[0]" class="avatar" src="{{user[0]}}">
+                <p class="ml-4">{{user[2]}}</p>
             </li>
         </ul>
     </div>

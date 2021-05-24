@@ -1,8 +1,9 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { JoinedUsersService } from 'src/app/services/joined-users/joined-users.service';
 import { User } from 'src/app/shared/types/user';
 import { DatabaseService } from 'src/app/services/database/database.service';
+import { R3UsedDirectiveMetadata } from '@angular/compiler';
 
 @Component({
   selector: 'app-wait-for-game',
@@ -12,17 +13,19 @@ import { DatabaseService } from 'src/app/services/database/database.service';
 export class WaitForGameComponent implements OnInit {
   gamecode: string;
   joinedUsers;
-  test = '';
-  allUsersInGame;
+  gameStarted;
+  allUsersInGame: Array<any>;
+
   @Output() userJoined = new EventEmitter<any>();
 
   constructor(
     private juService: JoinedUsersService,
     private router: ActivatedRoute,
-    private dbService: DatabaseService
+    private dbService: DatabaseService,
+    private router1: Router
   ) {
     this.gamecode = this.router.snapshot.params.id;
-    console.log(this.gamecode);
+    this.allUsersInGame = [''];
   }
 
   ngOnInit(): void {
@@ -32,12 +35,21 @@ export class WaitForGameComponent implements OnInit {
       .subscribe((userData) => {
         console.log(userData);
         this.joinedUsers = userData;
-        // for (let user of userData) {
-        //   console.log('gggg' + user);
-        //   this.allUsersInGame.push(this.dbService.getUserById(user.toString()));
-        // }
+        for (let i = 0; i < userData.length; i++) {
+          this.dbService.db
+            .list('/users/' + userData[i])
+            .valueChanges()
+            .subscribe((res) => {
+              this.allUsersInGame.push(res);
+            });
+        }
+      });
+
+    this.dbService.db
+      .list('/games/' + this.gamecode + '/gameStarted/')
+      .valueChanges()
+      .subscribe(() => {
+        this.router1.navigate([`gamescreen/${this.gamecode}`]);
       });
   }
-
-  ngAfterViewInit(): void {}
 }

@@ -81,6 +81,8 @@ export class DatabaseService {
         userSnapshot.forEach((userSnapshot) => {
           let user = userSnapshot.payload.toJSON();
           this.userList.push(user as User);
+          console.log('user' + user);
+          return user;
         });
       });
   }
@@ -157,6 +159,18 @@ export class DatabaseService {
         return this.drawingList;
       });
     return this.drawingList;
+  }
+
+  public updateGameStatus(gameid: String) {
+    const itemRef = this.db.object('/games/' + gameid);
+    return itemRef
+      .update({ gameStarted: true })
+      .then(() => {
+        console.log('created new Game');
+      })
+      .catch((error) => {
+        console.error(error + 'no game created');
+      });
   }
 
   //TODO
