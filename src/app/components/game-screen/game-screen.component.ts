@@ -2,7 +2,12 @@ import { Component, EventEmitter, OnInit } from '@angular/core';
 import { Round } from 'src/app/shared/types/Round';
 import { DrawingRound } from 'src/app/shared/types/drawingRound';
 import { TextRound } from 'src/app/shared/types/textRound';
-import { ViewChild, AfterViewInit, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
+import {
+  ViewChild,
+  AfterViewInit,
+  ViewContainerRef,
+  ComponentFactoryResolver,
+} from '@angular/core';
 import { DrawingEditorComponent } from 'src/app/components/drawing-editor/drawing-editor.component';
 import { TextInputComponent } from 'src/app/components/text-input/text-input.component';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
@@ -14,7 +19,6 @@ import { BehaviorSubject } from 'rxjs';
 import { GameHostDirective } from 'src/app/directives/game-host.directive';
 import { ComponentRef } from '@angular/core';
 
-
 @Component({
   selector: 'app-game-screen',
   templateUrl: './game-screen.component.html',
@@ -24,8 +28,10 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
   @ViewChild(DrawingEditorComponent) drawingEditor: DrawingEditorComponent;
   @ViewChild(TextInputComponent) textInput: TextInputComponent;
 
-  @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
-  @ViewChild('containerDraw', {read: ViewContainerRef}) containerDraw: ViewContainerRef;
+  @ViewChild('container', { read: ViewContainerRef })
+  container: ViewContainerRef;
+  @ViewChild('containerDraw', { read: ViewContainerRef })
+  containerDraw: ViewContainerRef;
 
   //@ViewChild(GameHostDirective, {static: true}) appGameHost!: GameHostDirective;
 
@@ -37,7 +43,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
 
   textList;
 
-  ref:ComponentRef<any>;
+  ref: ComponentRef<any>;
 
   //controll variables
   roundNumber = 6;
@@ -52,6 +58,8 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
   currentDrawingRound: DrawingRound;
   currentTextRound: TextRound;
 
+  textInputRef: any;
+  drawingInputRef: any;
   currentUserId;
   gamecode: string;
 
@@ -72,7 +80,6 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
     this.currentUserId = this.authService.getCurrentUserId();
     //set game ID
     this.gamecode = this.router.snapshot.params.id;
-
   }
 
   ngAfterViewInit(): void {
@@ -88,7 +95,6 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
   }
 
   getRandomText(roundCounter: number, gamecode: string): Promise<String> {
-
     let textRandom;
     const itemRef = this.dbService.db
       .list('/games/' + gamecode + '/rounds/' + roundCounter + '/textRounds/')
@@ -101,19 +107,16 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
           console.log(text);
           this.textList.push(text);
         });
-        console.log("this.textList");
+        console.log('this.textList');
         console.log(this.textList);
 
-        const index = this.getRandomArbitrary(0,this.textList.length - 1);
+        const index = this.getRandomArbitrary(0, this.textList.length - 1);
         textRandom = this.textList[index];
       });
 
-      return textRandom;
+    return textRandom;
 
     //const texts = await this.dbService.getTextsofRound(gamecode, roundCounter);
-
-
-
   }
 
   getRandomArbitrary(min, max) {
@@ -145,27 +148,27 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
   }
 
   loadTextComponent() {
-    if(this.ref){
+    if (this.ref) {
       this.ref.destroy();
     }
-    const factory = this.componentFactoryResolver.resolveComponentFactory(TextInputComponent);
+    const factory =
+      this.componentFactoryResolver.resolveComponentFactory(TextInputComponent);
     this.ref = this.container.createComponent(factory);
     this.ref.changeDetectorRef.detectChanges();
+    this.textInputRef = this.ref;
   }
 
   loadDrawComponent() {
-    if(this.ref){
+    if (this.ref) {
       this.ref.destroy();
     }
-    const factory = this.componentFactoryResolver.resolveComponentFactory(DrawingEditorComponent);
+    const factory = this.componentFactoryResolver.resolveComponentFactory(
+      DrawingEditorComponent
+    );
     this.ref = this.containerDraw.createComponent(factory);
     this.ref.changeDetectorRef.detectChanges();
+    this.drawingInputRef = this.ref;
   }
-
-
-
-
-
 
   async gameLogic() {
     console.log('Round' + this.roundCounter);
@@ -173,12 +176,11 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
     //drawing Round----------------------
 
     if (this.roundCounter % 2 == 0) {
-       //update variables for view
-       this.isTextRound = false;
-       this.isDrawingRound = true;
+      //update variables for view
+      this.isTextRound = false;
+      this.isDrawingRound = true;
 
-
-      console.log("1. in drawing round");
+      console.log('1. in drawing round');
 
       //roundChanged
       this.roundChanged.emit();
@@ -188,40 +190,36 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
         this.roundCounter - 1,
         this.gamecode
       );
-      console.log("2. got prev text");
+      console.log('2. got prev text');
       console.log(prevText);
 
       //create Round
       this.createDrawingRound();
-      console.log("3. create drawing round");
+      console.log('3. create drawing round');
 
       //set Text of previouse Round for view
-      if(!prevText){
-        this.currentDrawingRound.data = "no input of user happened :(";
+      if (!prevText) {
+        this.currentDrawingRound.data = 'no input of user happened :(';
+      } else {
+        this.currentDrawingRound.data = prevText.toString();
       }
-      else{
-      this.currentDrawingRound.data = prevText.toString();
-      }
-      console.log("4. set prev text");
+      console.log('4. set prev text');
 
-      console.log("isTextRound: "+this.isTextRound);
-      console.log("isDrawingRound: "+this.isDrawingRound);
+      console.log('isTextRound: ' + this.isTextRound);
+      console.log('isDrawingRound: ' + this.isDrawingRound);
 
-
-
-      if(this.isDrawingRound){
-
+      if (this.isDrawingRound) {
         this.loadDrawComponent();
-        console.log("loaded Drawing Screen");
+        console.log('loaded Drawing Screen');
       }
-
 
       // user is drawing
       setTimeout(() => {
         //finished drawing
-        console.log("5. drawing...");
+        console.log('5. drawing...');
 
-        this.dataFromDrawingEditor = this.drawingEditor.drawingDataFromChild;
+        this.dataFromDrawingEditor =
+          this.drawingInputRef.instance.drawingDataFromChild;
 
         //TODO push on author array------------------>
 
@@ -242,11 +240,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
         this.isDrawingRound = true;
         ++this.roundCounter;
 
-
-
         console.log(this.roundCounter);
-
-
 
         if (this.roundCounter <= this.roundNumber) {
           this.gameLogic();
@@ -256,9 +250,6 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
 
     //Text Round --------------------------------
     else {
-
-
-
       // if not first round get previos round data
       if (this.roundCounter != 1) {
         console.log('not in first round');
@@ -266,24 +257,19 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
         this.currentTextRound.data = this.previouseRound.data;
       }
 
-
-
-
       console.log('in first Round');
-      console.log("isTextRound: "+this.isTextRound);
-      console.log("isDrawingRound: "+this.isDrawingRound);
+      console.log('isTextRound: ' + this.isTextRound);
+      console.log('isDrawingRound: ' + this.isDrawingRound);
 
-      if(this.isTextRound){
+      if (this.isTextRound) {
         //this.detachView(TextInputComponent);
-        console.log(" in this.loadComponent");
+        console.log(' in this.loadComponent');
         this.loadTextComponent();
-        console.log(" loades componend");
+        console.log(' loades componend');
       }
-
-
       setTimeout(() => {
-        this.dataFromTextInput = this.textInput.textInput;
-        console.log(this.dataFromTextInput);
+        this.dataFromTextInput = this.textInputRef.instance.textInput;
+        console.log('xxxxx' + this.dataFromTextInput);
         //this.rounds.push(textRound);
 
         //TODO push on author array------------------>
@@ -306,16 +292,14 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
         this.isTextRound = true;
         this.isDrawingRound = false;
         console.log('finish actions after user input');
-        console.log("this.roundCounter");
+        console.log('this.roundCounter');
         console.log(this.roundCounter);
         ++this.roundCounter;
 
-        console.log("isTextRound: "+this.isTextRound);
-        console.log("isDrawingRound: "+this.isDrawingRound);
-
+        console.log('isTextRound: ' + this.isTextRound);
+        console.log('isDrawingRound: ' + this.isDrawingRound);
 
         console.log(this.roundCounter);
-
 
         if (this.roundCounter <= this.roundNumber) {
           this.gameLogic();

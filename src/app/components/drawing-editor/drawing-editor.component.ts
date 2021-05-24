@@ -28,9 +28,7 @@ export class DrawingEditorComponent implements AfterViewInit {
   public context: CanvasRenderingContext2D;
   private map = new Map();
   @HostListener('window:resize', ['$event'])
-
-  public drawingDataFromChild = "";
-
+  public drawingDataFromChild = '';
 
   onResize() {
     let temp = this.context.getImageData(0, 0, this.width, this.height);
@@ -61,9 +59,8 @@ export class DrawingEditorComponent implements AfterViewInit {
     //   this.drawingDataFromChild = base64;
     // });
 
-
     this.drawingDataFromChild = this.submitRound(canvasEl);
-}
+  }
 
   private captureEvents(canvasEl: HTMLCanvasElement) {
     fromEvent<MouseEvent>(canvasEl, 'mousedown')
@@ -90,7 +87,7 @@ export class DrawingEditorComponent implements AfterViewInit {
         };
         //store the drawn points with the color in a map
         this.map.set(currentPos, this.context.strokeStyle);
-        console.log(this.map);
+        //console.log(this.map);
         this.drawOnCanvas(prevPos, currentPos);
 
         this.drawingChanged.emit(canvasEl.toDataURL());
@@ -124,8 +121,7 @@ export class DrawingEditorComponent implements AfterViewInit {
     this.map.clear();
   }
 
-
-  public submitRound(canvasEl){
+  public submitRound(canvasEl) {
     let base64 = canvasEl.toDataURL();
     return base64;
   }
