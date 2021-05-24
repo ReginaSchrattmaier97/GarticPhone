@@ -30,6 +30,7 @@ import { WaitForGameComponent } from './components/game/wait-for-game/wait-for-g
 import { TextInputComponent } from './components/text-input/text-input.component';
 import { FinalPresentationComponent } from './components/game/final-presentation/final-presentation.component';
 import { GameScreenComponent } from './components/game-screen/game-screen.component';
+import { GameHostDirective } from './directives/game-host.directive';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { GameScreenComponent } from './components/game-screen/game-screen.compon
     TextInputComponent,
     FinalPresentationComponent,
     GameScreenComponent,
+    GameHostDirective,
   ],
   imports: [
     BrowserModule,
