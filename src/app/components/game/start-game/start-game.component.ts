@@ -13,15 +13,21 @@ export class StartGameComponent implements OnInit {
   constructor(
     private router: Router,
     private userService: JoinedUsersService,
-    private activatedRoute: ActivatedRoute,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    //this.userService.getJoinedUsers();
     this.gamecode = this.activatedRoute.snapshot.params.id;
+    this.userService.getJoinedUsers(this.gamecode);
   }
 
   routeToGame() {
     this.router.navigate([`gamescreen/${this.gamecode}`]);
+  }
+
+  userJoinedGameFunc() {
+    console.log('user joined here');
+    let x = 'joinedx';
+    return x;
   }
 }

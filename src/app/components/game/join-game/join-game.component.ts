@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { DatabaseService } from 'src/app/services/database/database.service';
+import { Output } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-join-game',
@@ -10,6 +12,7 @@ import { DatabaseService } from 'src/app/services/database/database.service';
 })
 export class JoinGameComponent implements OnInit {
   currentUserId;
+  @Output() userJoinedEvent = new EventEmitter<any>();
 
   constructor(
     private dbService: DatabaseService,
@@ -27,8 +30,15 @@ export class JoinGameComponent implements OnInit {
       this.currentUserId = id.toString();
       this.dbService.addUserToGameById(this.currentUserId, gamecode);
       this.router.navigate([`/wait/${gamecode}`]);
+      this.userJoinedEvent.emit(this.userJoinedFunc());
     } else {
       console.log('No current user available');
     }
+  }
+
+  userJoinedFunc() {
+    console.log(this.currentUserId + 'joined');
+    let x = 'joined';
+    return x;
   }
 }

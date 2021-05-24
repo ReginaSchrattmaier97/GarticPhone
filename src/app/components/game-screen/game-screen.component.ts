@@ -33,36 +33,34 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
   isDrawingRound = false;
   isTextRound = true;
 
-
   //init
-  initRound : TextRound;
-  previouseRound : Round;
-  currentDrawingRound : DrawingRound;
-  currentTextRound : TextRound;
+  initRound: TextRound;
+  previouseRound: Round;
+  currentDrawingRound: DrawingRound;
+  currentTextRound: TextRound;
 
   currentUserId;
-  gamecode :string;
+  gamecode: string;
 
   //for get Random text or image to pass to another user
   // images: Array<string>;
   // textinputs: Array<string>;
 
-
   public rounds: Round[] = []; //Array with Rounds
 
-  constructor(private authService: AuthenticationService, private dbService: DatabaseService, private router: ActivatedRoute) {}
+  constructor(
+    private authService: AuthenticationService,
+    private dbService: DatabaseService,
+    private router: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
     this.currentUserId = this.authService.getCurrentUserId();
     //set game ID
-    this.gamecode =  this.router.snapshot.params.id;
-
+    this.gamecode = this.router.snapshot.params.id;
   }
 
   ngAfterViewInit(): void {
-
-
-
     //init round
     // if(this.roundCounter == 0){
     //   this.initRound.text = this.dataFromTextInput;
@@ -71,155 +69,141 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
 
     //game
 
-
     this.gameLogic();
-}
+  }
 
-
-
-  async getRandomText(roundCounter: number, gamecode: string) : Promise<String> {
+  async getRandomText(roundCounter: number, gamecode: string): Promise<String> {
     const texts = await this.dbService.getTextsofRound(gamecode, roundCounter);
     console.log(texts);
-    const index = this.getRandomArbitrary(0, texts.length-1);
+    const index = this.getRandomArbitrary(0, texts.length - 1);
     const textRandom = texts[index];
     return textRandom.text;
   }
-
 
   getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
   }
 
   createDrawingRound() {
-    this.currentUserId =localStorage.getItem("currentUser");
-     //create Round
-     this.currentDrawingRound = new DrawingRound(
+    this.currentUserId = localStorage.getItem('currentUserId');
+    //create Round
+    this.currentDrawingRound = new DrawingRound(
       this.currentUserId,
-      this.dataFromDrawingEditor,
+      this.dataFromDrawingEditor
     );
 
     return this.currentDrawingRound;
   }
 
   createTextRound(dataFromTextInput) {
-    this.currentUserId = localStorage.getItem("currentUserId");
-     //create Round
-     this.currentTextRound = new TextRound(
+    this.currentUserId = localStorage.getItem('currentUserId');
+    //create Round
+    this.currentTextRound = new TextRound(
       this.currentUserId,
       dataFromTextInput,
-      '',
+      ''
     );
 
-    console.log("current text round");
+    console.log('current text round');
     return this.currentTextRound;
   }
 
-
-
-  async gameLogic(){
-    console.log("Round"+this.roundCounter);
+  async gameLogic() {
+    console.log('Round' + this.roundCounter);
 
     //drawing Round----------------------
 
     if (this.roundCounter % 2 == 0) {
-
       //roundChanged
       this.roundChanged.emit();
 
-
-
       //get random text
-       let prevText = await this.getRandomText(this.roundCounter-1, this.gamecode);
-       console.log(prevText);
-
-
+      let prevText = await this.getRandomText(
+        this.roundCounter - 1,
+        this.gamecode
+      );
+      console.log(prevText);
 
       //create Round
-        this.createDrawingRound();
+      this.createDrawingRound();
 
       //set Text of previouse Round for view
       this.currentDrawingRound.data = prevText.toString();
 
-
       // user is drawing
       setTimeout(() => {
-       //finished drawing
+        //finished drawing
 
-       this.dataFromDrawingEditor = this.drawingEditor.drawingDataFromChild;
+        this.dataFromDrawingEditor = this.drawingEditor.drawingDataFromChild;
 
-       //TODO push on author array------------------>
+        //TODO push on author array------------------>
 
-      //this.rounds.push(this.currentDrawingRound);
-      this.dbService.saveImagesToRound(this.gamecode, this.roundCounter,this.currentDrawingRound);
+        //this.rounds.push(this.currentDrawingRound);
+        this.dbService.saveImagesToRound(
+          this.gamecode,
+          this.roundCounter,
+          this.currentDrawingRound
+        );
 
-      //this.images.push(this.dataFromDrawingEditor);
+        //this.images.push(this.dataFromDrawingEditor);
 
-      //++this.roundCounter;
-      this.previouseRound = this.currentDrawingRound;
+        //++this.roundCounter;
+        this.previouseRound = this.currentDrawingRound;
 
-      //update variables for view
-      this.isTextRound = false;
-      this.isDrawingRound = true;
+        //update variables for view
+        this.isTextRound = false;
+        this.isDrawingRound = true;
 
-      ++this.roundCounter;
+        ++this.roundCounter;
 
-      if(this.roundCounter<=this.roundNumber){
-        this.gameLogic();
-      }
-
+        if (this.roundCounter <= this.roundNumber) {
+          this.gameLogic();
+        }
       }, 10000);
-
-
     }
-
 
     //Text Round --------------------------------
     else {
-
       // if not first round get previos round data
-      if(this.roundCounter != 1){
-        console.log("not in first round");
+      if (this.roundCounter != 1) {
+        console.log('not in first round');
         this.currentTextRound.data = this.previouseRound.data;
       }
 
-      console.log("in first Round");
+      console.log('in first Round');
 
       setTimeout(() => {
+        this.dataFromTextInput = this.textInput.textInput;
+        console.log(this.dataFromTextInput);
+        //this.rounds.push(textRound);
 
+        //TODO push on author array------------------>
+        //save text in db for random function
+        let textRound = this.createTextRound(this.dataFromTextInput);
+        console.log(textRound);
 
+        this.dbService.saveTextsToRound(
+          this.gamecode,
+          this.roundCounter,
+          textRound,
+          this.currentUserId
+        );
 
+        //this.textinputs.push(this.dataFromTextInput);
 
-      this.dataFromTextInput = this.textInput.textInput;
-      console.log(this.dataFromTextInput);
-      //this.rounds.push(textRound);
+        //++this.roundCounter;
 
-      //TODO push on author array------------------>
-      //save text in db for random function
-      let textRound=this.createTextRound(this.dataFromTextInput);
-      console.log(textRound);
+        this.previouseRound = this.currentTextRound;
+        this.isTextRound = true;
+        this.isDrawingRound = false;
+        console.log('finish actions after user input');
 
-      this.dbService.saveTextsToRound(this.gamecode, this.roundCounter,textRound, this.currentUserId);
+        ++this.roundCounter;
 
-
-      //this.textinputs.push(this.dataFromTextInput);
-
-      //++this.roundCounter;
-
-      this.previouseRound = this.currentTextRound;
-      this.isTextRound = true;
-      this.isDrawingRound = false;
-      console.log("finish actions after user input");
-
-
-      ++this.roundCounter;
-
-      if(this.roundCounter<=this.roundNumber){
-        this.gameLogic();
-      }
-
-      }, 10000)
-
-
+        if (this.roundCounter <= this.roundNumber) {
+          this.gameLogic();
+        }
+      }, 10000);
     }
   }
 }
