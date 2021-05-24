@@ -29,8 +29,6 @@ export class JoinGameComponent implements OnInit {
       id = userFirebase.uid;
       this.currentUserId = id.toString();
       this.dbService.addUserToGameById(this.currentUserId, gamecode);
-
-      this.router.navigate([`/wait/${gamecode}`]);
       this.userJoinedEvent.emit(this.userJoinedFunc());
     } else {
       console.log('No current user available');
