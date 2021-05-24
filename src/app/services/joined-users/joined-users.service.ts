@@ -15,4 +15,15 @@ export class JoinedUsersService {
   getJoinedUsers(gamecode) {
     return this.dbService.getUsersByGameId(gamecode);
   }
+
+  usersUpdated(gamecode): Array<String> {
+    this.dbService.db
+      .list('/games/' + gamecode + '/users/')
+      .valueChanges()
+      .subscribe((userData) => {
+        console.log(userData);
+        return userData;
+      });
+    return ['test'];
+  }
 }

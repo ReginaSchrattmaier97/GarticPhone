@@ -16,7 +16,7 @@ export class DatabaseService {
   public textList;
   public drawingList;
 
-  constructor(private db: AngularFireDatabase, private router: Router) {}
+  constructor(public db: AngularFireDatabase, private router: Router) {}
 
   public saveUser(user: User): Promise<void> {
     console.log(user.id);
@@ -85,9 +85,16 @@ export class DatabaseService {
       });
   }
 
-  public saveImagesToRound(gameid: String, roundCounter: number, drawingRound: DrawingRound){
-    const itemRef = this.db.object('/games/' + gameid + '/rounds/' + roundCounter + '/drawingRounds/');
-    return itemRef.set(drawingRound)
+  public saveImagesToRound(
+    gameid: String,
+    roundCounter: number,
+    drawingRound: DrawingRound
+  ) {
+    const itemRef = this.db.object(
+      '/games/' + gameid + '/rounds/' + roundCounter + '/drawingRounds/'
+    );
+    return itemRef
+      .set(drawingRound)
       .then(() => {
         console.log('saved drawing Round');
       })
@@ -96,60 +103,63 @@ export class DatabaseService {
       });
   }
 
-  public saveTextsToRound(gameid: String, roundCounter: number, textRound: TextRound, userId: string){
-    const itemRef = this.db.list('/games/' + gameid + '/rounds/' + roundCounter + '/textRounds/');
-    return itemRef.set(userId, textRound)
+  public saveTextsToRound(
+    gameid: String,
+    roundCounter: number,
+    textRound: TextRound,
+    userId: string
+  ) {
+    const itemRef = this.db.list(
+      '/games/' + gameid + '/rounds/' + roundCounter + '/textRounds/'
+    );
+    return itemRef
+      .set(userId, textRound)
       .then(() => {
         console.log('saved Text Round');
       })
       .catch((error) => {
         console.error(error + 'no text saved');
       });
-
   }
 
-  public getTextsofRound(gameid: String, roundCounter: number):Promise<Array<TextRound>>{
+  public getTextsofRound(
+    gameid: String,
+    roundCounter: number
+  ): Promise<Array<TextRound>> {
     const itemRef = this.db
-    .list('/games/' + gameid + '/rounds/' + roundCounter + '/textRounds/')
-    .snapshotChanges()
-    .forEach((textSnapshot) => {
-      this.textList = [];
-      textSnapshot.forEach((textSnapshot) => {
-        let text= textSnapshot.payload.toJSON();
-        console.log("text");
-        console.log(text);
-        this.textList.push(text);
+      .list('/games/' + gameid + '/rounds/' + roundCounter + '/textRounds/')
+      .snapshotChanges()
+      .forEach((textSnapshot) => {
+        this.textList = [];
+        textSnapshot.forEach((textSnapshot) => {
+          let text = textSnapshot.payload.toJSON();
+          console.log('text');
+          console.log(text);
+          this.textList.push(text);
+        });
+        console.log(this.textList);
+        return this.textList;
       });
-      console.log(this.textList);
-      return this.textList;
-    });
     console.log(this.textList);
-  return this.textList;
-}
+    return this.textList;
+  }
 
-
-public getImagesofRound(gameid: String, roundCounter: number){
-  const itemRef = this.db
-  .list('/games/' + gameid + '/rounds/' + roundCounter + '/drawingRounds/')
-  .snapshotChanges()
-  .forEach((drawingSnapshot) => {
-    this.drawingList = [];
-    drawingSnapshot.forEach((drawingSnapshot) => {
-      let drawing= drawingSnapshot.payload.toJSON();
-      this.drawingList.push(drawing);
-    });
+  public getImagesofRound(gameid: String, roundCounter: number) {
+    const itemRef = this.db
+      .list('/games/' + gameid + '/rounds/' + roundCounter + '/drawingRounds/')
+      .snapshotChanges()
+      .forEach((drawingSnapshot) => {
+        this.drawingList = [];
+        drawingSnapshot.forEach((drawingSnapshot) => {
+          let drawing = drawingSnapshot.payload.toJSON();
+          this.drawingList.push(drawing);
+        });
+        return this.drawingList;
+      });
     return this.drawingList;
-  });
-return this.drawingList;
-}
+  }
 
-
-//TODO
-//--update TextRound --> update field assigned to user
-//--update ImageRound --> update field assigned to user
-
-
-
-
-
+  //TODO
+  //--update TextRound --> update field assigned to user
+  //--update ImageRound --> update field assigned to user
 }
