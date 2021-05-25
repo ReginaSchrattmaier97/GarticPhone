@@ -19,7 +19,6 @@ import { switchMap, takeUntil, pairwise } from 'rxjs/operators';
 })
 export class DrawingEditorComponent implements AfterViewInit {
   @ViewChild('canvas') canvas: ElementRef;
-  @ViewChild('img') img: ElementRef;
 
   @Input() public width = window.innerWidth * 0.7;
   @Input() public height = window.innerHeight * 0.7;
@@ -52,14 +51,10 @@ export class DrawingEditorComponent implements AfterViewInit {
     this.context.canvas.height = this.height;
 
     this.captureEvents(canvasEl);
-    const imageEl: HTMLImageElement = this.img.nativeElement;
 
-    // this.drawingChanged.pipe().subscribe((base64) => {
-    //   imageEl.src = base64;
-    //   this.drawingDataFromChild = base64;
-    // });
-
-    this.drawingDataFromChild = this.submitRound(canvasEl);
+    this.drawingChanged.pipe(delay(500)).subscribe(() => {
+      this.drawingDataFromChild = this.submitRound(canvasEl);
+    });
   }
 
   private captureEvents(canvasEl: HTMLCanvasElement) {

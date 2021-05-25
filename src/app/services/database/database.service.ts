@@ -90,13 +90,14 @@ export class DatabaseService {
   public saveImagesToRound(
     gameid: String,
     roundCounter: number,
-    drawingRound: DrawingRound
+    drawingRound: DrawingRound,
+    userId: string
   ) {
-    const itemRef = this.db.object(
+    const itemRef = this.db.list(
       '/games/' + gameid + '/rounds/' + roundCounter + '/drawingRounds/'
     );
     return itemRef
-      .set(drawingRound)
+      .set(userId, drawingRound)
       .then(() => {
         console.log('saved drawing Round');
       })

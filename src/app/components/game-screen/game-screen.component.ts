@@ -18,6 +18,7 @@ import { Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';
 import { GameHostDirective } from 'src/app/directives/game-host.directive';
 import { ComponentRef } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-game-screen',
@@ -73,6 +74,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
     private authService: AuthenticationService,
     private dbService: DatabaseService,
     private router: ActivatedRoute,
+    private router2: Router,
     private componentFactoryResolver: ComponentFactoryResolver
   ) {}
 
@@ -221,13 +223,16 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
         this.dataFromDrawingEditor =
           this.drawingInputRef.instance.drawingDataFromChild;
 
+        console.log(this.drawingInputRef.instance.drawingDataFromChild);
+
         //TODO push on author array------------------>
 
         //this.rounds.push(this.currentDrawingRound);
         this.dbService.saveImagesToRound(
           this.gamecode,
           this.roundCounter,
-          this.currentDrawingRound
+          this.dataFromDrawingEditor,
+          this.currentUserId
         );
 
         //this.images.push(this.dataFromDrawingEditor);
@@ -245,6 +250,10 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
         if (this.roundCounter <= this.roundNumber) {
           this.gameLogic();
         }
+        if (this.roundCounter == 7) {
+          this.ref.destroy();
+          console.log('navigate!!');
+        }
       }, 10000);
     }
 
@@ -256,7 +265,8 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
         this.firstRound = false;
         this.currentTextRound.data = this.previouseRound.data;
       }
-
+      this.isTextRound = true;
+      this.isDrawingRound = false;
       console.log('in first Round');
       console.log('isTextRound: ' + this.isTextRound);
       console.log('isDrawingRound: ' + this.isDrawingRound);
@@ -269,7 +279,6 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
       }
       setTimeout(() => {
         this.dataFromTextInput = this.textInputRef.instance.textInput;
-        console.log('xxxxx' + this.dataFromTextInput);
         //this.rounds.push(textRound);
 
         //TODO push on author array------------------>
@@ -294,6 +303,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
         console.log('finish actions after user input');
         console.log('this.roundCounter');
         console.log(this.roundCounter);
+
         ++this.roundCounter;
 
         console.log('isTextRound: ' + this.isTextRound);
@@ -303,6 +313,8 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
 
         if (this.roundCounter <= this.roundNumber) {
           this.gameLogic();
+        } else {
+          this.router2.navigate([`/results/${this.gamecode}`]);
         }
       }, 10000);
     }
