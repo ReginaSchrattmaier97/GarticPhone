@@ -4,6 +4,8 @@
     </div>
     <div #container></div>
     <div #containerDraw></div>
-
+    <li *ngFor="let result of this.resultList" class="hidden">
+        <p class="ml-4">{{result}}</p>
+    </li>
 
 </mat-card>

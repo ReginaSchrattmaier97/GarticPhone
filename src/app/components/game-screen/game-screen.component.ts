@@ -19,6 +19,7 @@ import { BehaviorSubject } from 'rxjs';
 import { GameHostDirective } from 'src/app/directives/game-host.directive';
 import { ComponentRef } from '@angular/core';
 import { Router } from '@angular/router';
+import { ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-game-screen',
@@ -43,6 +44,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
   dataFromTextInput: any;
 
   textList;
+  resultList;
 
   ref: ComponentRef<any>;
 
@@ -75,7 +77,8 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
     private dbService: DatabaseService,
     private router: ActivatedRoute,
     private router2: Router,
-    private componentFactoryResolver: ComponentFactoryResolver
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private el: ElementRef
   ) {}
 
   ngOnInit(): void {
@@ -119,6 +122,36 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
     return textRandom;
 
     //const texts = await this.dbService.getTextsofRound(gamecode, roundCounter);
+  }
+
+  getAllResults(gamecode: string) {
+    const itemRef = this.dbService.db
+      .list('/games/' + gamecode)
+      .snapshotChanges()
+      .forEach((resultSnapshot) => {
+        this.resultList = [];
+        resultSnapshot.forEach((resultSnapshot) => {
+          let result = resultSnapshot.payload.toJSON();
+          this.resultList.push(result);
+        });
+        console.log('this.resultList');
+        console.log(this.resultList);
+      });
+  }
+
+  getAllTexts(gamecode: string) {
+    const itemRef = this.dbService.db
+      .list('/games/' + gamecode + '/rounds/' + '/textRounds/')
+      .snapshotChanges()
+      .forEach((resultSnapshot) => {
+        this.resultList = [];
+        resultSnapshot.forEach((resultSnapshot) => {
+          let result = resultSnapshot.payload.toJSON();
+          this.resultList.push(result);
+        });
+        console.log('this.resultList');
+        console.log(this.resultList);
+      });
   }
 
   getRandomArbitrary(min, max) {
@@ -252,7 +285,12 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
         }
         if (this.roundCounter == 7) {
           this.ref.destroy();
-          console.log('navigate!!');
+          console.log('done!!');
+          this.getAllResults(this.gamecode);
+          //this.getAllTexts(this.gamecode);
+          let myTag;
+          myTag = this.el.nativeElement.querySelector('li');
+          myTag.classList.remove('hidden');
         }
       }, 10000);
     }
@@ -313,8 +351,6 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
 
         if (this.roundCounter <= this.roundNumber) {
           this.gameLogic();
-        } else {
-          this.router2.navigate([`/results/${this.gamecode}`]);
         }
       }, 10000);
     }
