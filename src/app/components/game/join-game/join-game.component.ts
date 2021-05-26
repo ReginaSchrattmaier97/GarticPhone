@@ -12,6 +12,7 @@ import { Observable } from 'rxjs';
 })
 export class JoinGameComponent implements OnInit {
   currentUserId;
+  loggedIn: boolean = false;
   @Output() userJoinedEvent = new EventEmitter<any>();
 
   constructor(
@@ -20,7 +21,14 @@ export class JoinGameComponent implements OnInit {
     private authService: AuthenticationService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.currentUserId = localStorage.getItem('currentUserId');
+    if (this.currentUserId) {
+      this.loggedIn = true;
+    } else {
+      this.loggedIn = false;
+    }
+  }
 
   async getGameId(gamecode) {
     const userFirebase = await this.authService.isLoggedIn();
@@ -40,5 +48,9 @@ export class JoinGameComponent implements OnInit {
     console.log(this.currentUserId + 'joined');
     let x = 'joined';
     return x;
+  }
+
+  logIn() {
+    this.router.navigate(['/login']);
   }
 }

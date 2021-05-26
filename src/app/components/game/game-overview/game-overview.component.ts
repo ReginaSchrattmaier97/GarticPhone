@@ -5,20 +5,34 @@ import { CreateGameService } from 'src/app/services/create-game/create-game.serv
 @Component({
   selector: 'app-game-overview',
   templateUrl: './game-overview.component.html',
-  styleUrls: ['./game-overview.component.scss']
+  styleUrls: ['./game-overview.component.scss'],
 })
 export class GameOverviewComponent implements OnInit {
-
-  constructor( private createGameService : CreateGameService, private router: Router) {
-
-
-  }
+  currentUserId;
+  loggedIn: boolean = false;
+  constructor(
+    private createGameService: CreateGameService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
+    this.currentUserId = localStorage.getItem('currentUserId');
+    if (this.currentUserId) {
+      this.loggedIn = true;
+    } else {
+      this.loggedIn = false;
+    }
   }
 
-  createGame(){
+  createGame() {
     let id = this.createGameService.createGame();
   }
 
+  joinGame() {
+    this.router.navigate(['/join']);
+  }
+
+  logIn() {
+    this.router.navigate(['/login']);
+  }
 }

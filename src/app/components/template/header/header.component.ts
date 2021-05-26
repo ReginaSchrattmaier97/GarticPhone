@@ -16,5 +16,6 @@ export class HeaderComponent implements OnInit {
 
   Logout() {
     this.authService.SignOut();
+    localStorage.removeItem('currentUserId');
   }
 }

@@ -115,6 +115,7 @@ export class DatabaseService {
     const itemRef = this.db.list(
       '/games/' + gameid + '/rounds/' + roundCounter + '/textRounds/'
     );
+
     return itemRef
       .set(userId, textRound)
       .then(() => {

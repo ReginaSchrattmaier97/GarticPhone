@@ -45,6 +45,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
 
   textList;
   resultList;
+  userList;
 
   ref: ComponentRef<any>;
 
@@ -99,10 +100,48 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
     this.gameLogic();
   }
 
-  getRandomText(roundCounter: number, gamecode: string): Promise<String> {
-    let textRandom;
+  getNextUserId(gamecode: string, userId: string) {
     const itemRef = this.dbService.db
-      .list('/games/' + gamecode + '/rounds/' + roundCounter + '/textRounds/')
+      .list('/games/' + gamecode + '/users/')
+      .snapshotChanges()
+      .forEach((userSnapshot) => {
+        this.userList = [];
+        userSnapshot.forEach((userSnapshot) => {
+          let user = userSnapshot.payload.toJSON();
+          console.log('user');
+          console.log(user);
+          this.userList.push(user);
+        });
+        console.log('this.userList');
+        console.log(this.userList);
+        let index = 0;
+        for (let i = 0; i < this.userList.length; i++) {
+          if (this.userList[i] == userId) {
+            if (i + 1 == this.userList.length) {
+              index = 0;
+            } else {
+              index = i + 1;
+            }
+          }
+        }
+        return this.userList[index];
+      });
+  }
+
+  getRandomText(
+    roundCounter: number,
+    gamecode: string,
+    nextUserId: string
+  ): Promise<String> {
+    const itemRef = this.dbService.db
+      .list(
+        '/games/' +
+          gamecode +
+          '/rounds/' +
+          roundCounter +
+          '/textRounds/' +
+          nextUserId
+      )
       .snapshotChanges()
       .forEach((textSnapshot) => {
         this.textList = [];
@@ -114,12 +153,9 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
         });
         console.log('this.textList');
         console.log(this.textList);
-
-        const index = this.getRandomArbitrary(0, this.textList.length - 1);
-        textRandom = this.textList[index];
       });
 
-    return textRandom;
+    return this.textList;
 
     //const texts = await this.dbService.getTextsofRound(gamecode, roundCounter);
   }
@@ -154,9 +190,9 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
       });
   }
 
-  getRandomArbitrary(min, max) {
-    return Math.random() * (max - min) + min;
-  }
+  // getRandomArbitrary(min, max) {
+  //   return Math.random() * (max - min) + min;
+  // }
 
   createDrawingRound() {
     this.currentUserId = localStorage.getItem('currentUserId');
@@ -221,9 +257,12 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
       this.roundChanged.emit();
 
       //get random text
+      // let nextUserId = this.getNextUserId(this.gamecode, this.currentUserId);
+      // console.log('next user id: ' + nextUserId);
       let prevText = await this.getRandomText(
         this.roundCounter - 1,
-        this.gamecode
+        this.gamecode,
+        this.currentUserId
       );
       console.log('2. got prev text');
       console.log(prevText);
@@ -317,13 +356,15 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
       }
       setTimeout(() => {
         this.dataFromTextInput = this.textInputRef.instance.textInput;
+        if (this.dataFromTextInput == null) {
+          this.dataFromTextInput = 'Draw anything you like';
+        }
+
         //this.rounds.push(textRound);
 
         //TODO push on author array------------------>
         //save text in db for random function
         let textRound = this.createTextRound(this.dataFromTextInput);
-        console.log(textRound);
-
         this.dbService.saveTextsToRound(
           this.gamecode,
           this.roundCounter,

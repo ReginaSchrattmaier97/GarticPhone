@@ -1,4 +1,4 @@
-<mat-card class="container">
+<mat-card *ngIf="loggedIn == true;else logged_out" class="container">
     <div class="text-center">
         <p class="mb-8">Please enter a gamecode to join a game!</p>
         <mat-form-field appearance="legacy">
@@ -8,3 +8,8 @@
         <button class="ml-4" mat-raised-button type="submit" color="primary" (click)="getGameId(gamecode.value)">Join</button>
     </div>
 </mat-card>
+
+<ng-template #logged_out>
+    <div class="text-white">Please Log In</div>
+    <button mat-raised-button color="primary" class="m-4" (click)="logIn()">Log In</button>
+</ng-template>
