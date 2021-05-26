@@ -4,6 +4,8 @@ import { AuthenticationService } from 'src/app/services/authentication/authentic
 import { DatabaseService } from 'src/app/services/database/database.service';
 import { Output } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Store } from '@ngxs/store';
+import { JoinGame } from '../../../store/user/user.actions';
 
 @Component({
   selector: 'app-join-game',
@@ -18,7 +20,8 @@ export class JoinGameComponent implements OnInit {
   constructor(
     private dbService: DatabaseService,
     private router: Router,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private store: Store
   ) {}
 
   ngOnInit(): void {
@@ -30,25 +33,29 @@ export class JoinGameComponent implements OnInit {
     }
   }
 
-  async getGameId(gamecode) {
-    const userFirebase = await this.authService.isLoggedIn();
-    let id = '';
-    if (userFirebase) {
-      id = userFirebase.uid;
-      this.currentUserId = id.toString();
-      this.dbService.addUserToGameById(this.currentUserId, gamecode);
-      this.router.navigate([`/wait/${gamecode}`]);
-      this.userJoinedEvent.emit(this.userJoinedFunc());
-    } else {
-      console.log('No current user available');
-    }
+  joinGame(){
+    this.store.dispatch(new JoinGame(this.currentUserId));
   }
 
-  userJoinedFunc() {
-    console.log(this.currentUserId + 'joined');
-    let x = 'joined';
-    return x;
-  }
+  // async getGameId(gamecode) {
+  //   const userFirebase = await this.authService.isLoggedIn();
+  //   let id = '';
+  //   if (userFirebase) {
+  //     id = userFirebase.uid;
+  //     this.currentUserId = id.toString();
+  //     this.dbService.addUserToGameById(this.currentUserId, gamecode);
+  //     this.router.navigate([`/wait/${gamecode}`]);
+  //     this.userJoinedEvent.emit(this.userJoinedFunc());
+  //   } else {
+  //     console.log('No current user available');
+  //   }
+  // }
+
+  // userJoinedFunc() {
+  //   console.log(this.currentUserId + 'joined');
+  //   let x = 'joined';
+  //   return x;
+  // }
 
   logIn() {
     this.router.navigate(['/login']);

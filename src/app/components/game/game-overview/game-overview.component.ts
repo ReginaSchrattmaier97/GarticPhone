@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CreateGameService } from 'src/app/services/create-game/create-game.service';
+import { Select, Store } from '@ngxs/store';
+import { CreateGame } from '../../../store/game/game.actions';
+import { Game } from 'src/app/shared/types/game';
 
 @Component({
   selector: 'app-game-overview',
@@ -12,7 +15,8 @@ export class GameOverviewComponent implements OnInit {
   loggedIn: boolean = false;
   constructor(
     private createGameService: CreateGameService,
-    private router: Router
+    private router: Router,
+    private store: Store
   ) {}
 
   ngOnInit(): void {
@@ -25,7 +29,8 @@ export class GameOverviewComponent implements OnInit {
   }
 
   createGame() {
-    let id = this.createGameService.createGame();
+    this.store.dispatch(new CreateGame(this.currentUserId));
+    this.router.navigate([`/start/${this.currentUserId}`]);
   }
 
   joinGame() {

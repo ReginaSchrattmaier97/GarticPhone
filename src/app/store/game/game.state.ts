@@ -1,0 +1,63 @@
+import { Inject, Injectable } from '@angular/core';
+import { Action, NgxsOnInit, Selector, State, StateContext, Store } from '@ngxs/store';
+
+import { ActivatedRoute, Router } from '@angular/router';
+import * as gameActions from './game.actions';
+import { CreateGameService } from 'src/app/services/create-game/create-game.service';
+import { DatabaseService } from 'src/app/services/database/database.service';
+
+
+
+
+export interface GamesStateModel {
+  created: boolean;
+  started: boolean;
+  finished: boolean
+}
+
+@State<GamesStateModel>({
+  name: 'gamestate'
+})
+
+@Injectable()
+
+export class GameState {
+  constructor(
+    private cgService: CreateGameService,
+    private dbService: DatabaseService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    ){
+
+  }
+
+  public gamecode = this.activatedRoute.snapshot.params.id;
+
+
+@Action( gameActions.CreateGame)
+createGame({ patchState }: StateContext<GamesStateModel>) {
+  patchState({ created: true });
+  this.cgService.createGame();
+}
+
+
+@Action( gameActions.StartGame)
+startGame({ patchState }: StateContext<GamesStateModel>) {
+  patchState({ started: true });
+  this.gamecode =
+  this.dbService.updateGameStatus(this.gamecode);
+}
+
+
+
+@Action( gameActions.FinishGame)
+finishGame(ctx: StateContext<GamesStateModel>){
+  const state = ctx.getState();
+  ctx.setState({
+    ...state,
+    finished: state.finished=true
+  });
+}
+
+}
+

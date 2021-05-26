@@ -24,7 +24,7 @@
     "@angular/router": "~11.2.10",
     "@ngxs/devtools-plugin": "^3.7.1",
     "@ngxs/logger-plugin": "^3.7.1",
-    "@ngxs/store": "^3.7.1",
+    "@ngxs/store": "^3.7.2",
     "firebase": "^7.0 || ^8.0",
     "rxjs": "~6.6.0",
     "tailwindcss": "^2.1.2",

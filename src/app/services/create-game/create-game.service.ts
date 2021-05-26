@@ -20,7 +20,7 @@ export class CreateGameService {
     if(this.administrator){
       this.game.id = this.administrator.uid;
       this.dbService.createGame(this.game);
-      this.router.navigate([`/start/${this.game.id}`]);
+
     }
   }
 }

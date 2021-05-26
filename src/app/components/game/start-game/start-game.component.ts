@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JoinedUsersService } from 'src/app/services/joined-users/joined-users.service';
 import { DatabaseService } from 'src/app/services/database/database.service';
+import { Store } from '@ngxs/store';
+import { StartGame } from '../../../store/game/game.actions';
 
 @Component({
   selector: 'app-start-game',
@@ -17,7 +19,8 @@ export class StartGameComponent implements OnInit {
     private router: Router,
     private userService: JoinedUsersService,
     private activatedRoute: ActivatedRoute,
-    private dbService: DatabaseService
+    private dbService: DatabaseService,
+    private store: Store
   ) {
     this.gamecode = this.activatedRoute.snapshot.params.id;
     this.allUsersInGame = [''];
@@ -44,7 +47,7 @@ export class StartGameComponent implements OnInit {
   }
 
   startGame() {
-    this.dbService.updateGameStatus(this.gamecode);
+    this.store.dispatch(new StartGame());
     this.router.navigate([`gamescreen/${this.gamecode}`]);
   }
 

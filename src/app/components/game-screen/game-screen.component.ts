@@ -276,6 +276,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
         this.currentDrawingRound.data = 'no input of user happened :(';
       } else {
         this.currentDrawingRound.data = prevText.toString();
+        this.currentDrawingRound.authorId = this.previouseRound.authorId;
       }
       console.log('4. set prev text');
 
@@ -341,7 +342,13 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
         console.log('not in first round');
         this.firstRound = false;
         this.currentTextRound.data = this.previouseRound.data;
+        //this.currentTextRound.authorId = this.previouseRound.authorId;
       }
+
+      if(this.roundCounter == 1){
+        this.currentTextRound.authorId = this.currentUserId;
+      }
+
       this.isTextRound = true;
       this.isDrawingRound = false;
       console.log('in first Round');
