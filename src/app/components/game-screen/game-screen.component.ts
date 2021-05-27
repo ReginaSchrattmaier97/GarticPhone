@@ -201,22 +201,26 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
   //   return Math.random() * (max - min) + min;
   // }
 
-  createDrawingRound(dataFromDrawingInput) {
+  createDrawingRound(dataFromDrawingInput, authorId, data) {
     this.currentUserId = localStorage.getItem('currentUserId');
     //create Round
     this.currentDrawingRound = new DrawingRound(
       this.currentUserId,
       dataFromDrawingInput,
+      data,
+      authorId,
     );
     return this.currentDrawingRound;
   }
 
-  createTextRound(dataFromTextInput) {
+  createTextRound(dataFromTextInput, authorId, data) {
     this.currentUserId = localStorage.getItem('currentUserId');
     //create Round
     this.currentTextRound = new TextRound(
       this.currentUserId,
       dataFromTextInput,
+      data,
+      authorId
     );
 
     console.log('current text round');
@@ -263,9 +267,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
       //roundChanged
       this.roundChanged.emit();
 
-      //get random text
-      // let nextUserId = this.getNextUserId(this.gamecode, this.currentUserId);
-      // console.log('next user id: ' + nextUserId);
+
       let prevText = await this.getRandomText(
         this.roundCounter - 1,
         this.gamecode,
@@ -275,7 +277,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
       console.log(prevText);
 
       //create Round
-      this.createDrawingRound(this.dataFromDrawingEditor);
+      //this.createDrawingRound(this.dataFromDrawingEditor);
       console.log('3. create drawing round');
 
       this.store.dispatch(new DrawingRoundState(prevText));
@@ -285,7 +287,6 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
         this.currentDrawingRound.data = 'no input of user happened :(';
       } else {
         this.currentDrawingRound.data = prevText.toString();
-        //this.currentDrawingRound.authorId = this.previouseRound.authorId;
       }
       console.log('4. set prev text');
 
@@ -309,8 +310,8 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
 
         //TODO push on author array------------------>
 
-        //this.rounds.push(this.currentDrawingRound);
-        let drawingRound = this.createDrawingRound(this.dataFromDrawingEditor);
+
+        let drawingRound = this.createDrawingRound(this.dataFromDrawingEditor,this.previouseRound.authorId,'data');
         this.dbService.saveImagesToRound(
           this.gamecode,
           this.previouseRound.authorId,
@@ -319,9 +320,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
           this.roundCounter.toString()
         );
 
-        //this.images.push(this.dataFromDrawingEditor);
 
-        //++this.roundCounter;
         this.previouseRound = this.currentDrawingRound;
 
         //update variables for view
@@ -338,7 +337,6 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
           this.ref.destroy();
           console.log('done!!');
           this.getAllResults(this.gamecode);
-          //this.getAllTexts(this.gamecode);
           let myTag;
           myTag = this.el.nativeElement.querySelector('li');
           myTag.classList.remove('hidden');
@@ -356,21 +354,13 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
         this.currentTextRound.data = this.previouseRound.data;
 
         this.store.dispatch(new TextRoundState(this.currentTextRound.data));
-        //this.currentTextRound.authorId = this.previouseRound.authorId;
       }
-
 
       this.isTextRound = true;
       this.isDrawingRound = false;
-      console.log('in first Round');
-      console.log('isTextRound: ' + this.isTextRound);
-      console.log('isDrawingRound: ' + this.isDrawingRound);
 
       if (this.isTextRound) {
-        //this.detachView(TextInputComponent);
-        console.log(' in this.loadComponent');
         this.loadTextComponent();
-        console.log(' loades componend');
       }
       setTimeout(() => {
         this.dataFromTextInput = this.textInputRef.instance.textInput;
@@ -378,23 +368,15 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
           this.dataFromTextInput = 'Draw anything you like';
         }
 
-
-
-        //this.rounds.push(textRound);
-
         //TODO push on author array------------------>
         //save text in db for random function
 
-        console.log("here");
+
         if(this.roundCounter == 1){
           this.authorID = this.currentUserId;
-         // this.dbService.saveInputsInAlbumOfUser(this.dataFromTextInput, this.authorID);
-          console.log("here1");
-          console.log(this.dataFromTextInput);
           this.store.dispatch(new StartFirstRound(this.dataFromTextInput))
-          //this.currentTextRound.authorId = this.currentUserId;
 
-          let textRound = this.createTextRound(this.dataFromTextInput);
+          let textRound = this.createTextRound(this.dataFromTextInput,this.authorID, 'data');
           console.log(textRound);
           this.dbService.saveTextsToRound(
             this.gamecode,
@@ -405,8 +387,8 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
           )
         }
         else{
-          console.log(this.createTextRound(this.dataFromTextInput));
-        let textRound = this.createTextRound(this.dataFromTextInput);
+
+        let textRound = this.createTextRound(this.dataFromTextInput, this.previouseRound.authorId, 'data');
         console.log(textRound);
         this.dbService.saveTextsToRound(
           this.gamecode,
