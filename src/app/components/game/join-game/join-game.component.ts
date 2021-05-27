@@ -37,8 +37,25 @@ export class JoinGameComponent implements OnInit {
   }
 
   joinGame(gamecode){
-    this.store.dispatch(new AddUserToGame(this.currentUserId, gamecode, this.user));
+
+    this.store.dispatch(new AddUserToGame(this.currentUserId, gamecode));
+
+    // this.dbService.getUserById(this.currentUserId).subscribe((userData) => {
+    //   let user:User;
+    //   console.log(userData[0].payload.toJSON().toString());
+    //   user.imageUrl = userData[0].payload.toJSON().toString();
+    //   user.firstName= userData[2].payload.toJSON().toString();
+    //   user.id= userData[3].payload.toJSON().toString();
+    //   user.lastName= userData[4].payload.toJSON().toString();
+    //   //return this.joinedUser;
+    //   console.log(user);
+
+    // });
+
+
+
   }
+
 
   // async getGameId(gamecode) {
   //   const userFirebase = await this.authService.isLoggedIn();
