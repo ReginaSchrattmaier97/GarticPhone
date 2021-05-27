@@ -26,6 +26,7 @@ import {
   TextRoundState,
 } from 'src/app/store/game/game.actions';
 import { Store } from '@ngxs/store';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-game-screen',
@@ -51,7 +52,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
 
   textList;
   resultList;
-  userList;
+  userList: any;
 
   authorID: string;
 
@@ -95,6 +96,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
     this.currentUserId = this.authService.getCurrentUserId();
     //set game ID
     this.gamecode = this.router.snapshot.params.id;
+    this.userList = this.getAllUserId(this.gamecode);
   }
 
   ngAfterViewInit(): void {
@@ -109,32 +111,30 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
     this.gameLogic();
   }
 
-  getNextUserId(gamecode: string, userId: string) {
-    const itemRef = this.dbService.db
+  getAllUserId(gamecode: string) {
+    // this.dbService.db
+    //   .list('/games/' + gamecode + '/users/')
+    //   .snapshotChanges()
+    //   .pipe(
+    //     map((userSnapshot) => {
+    //       return userSnapshot.map((userSnapshot) => {
+    //         const user = userSnapshot.payload.toJSON();
+    //         return { user };
+    //       });
+    //     })
+    //   )
+    //   .subscribe((data) => {
+    //     this.userList = data;
+    //   });
+    this.dbService.db
       .list('/games/' + gamecode + '/users/')
-      .snapshotChanges()
-      .forEach((userSnapshot) => {
-        this.userList = [];
-        userSnapshot.forEach((userSnapshot) => {
-          let user = userSnapshot.payload.toJSON();
-          console.log('user');
-          console.log(user);
-          this.userList.push(user);
-        });
-        console.log('this.userList');
-        console.log(this.userList);
-        let index = 0;
-        for (let i = 0; i < this.userList.length; i++) {
-          if (this.userList[i] == userId) {
-            if (i + 1 == this.userList.length) {
-              index = 0;
-            } else {
-              index = i + 1;
-            }
-            break;
-          }
-        }
-        return this.userList[index];
+      .valueChanges()
+      .subscribe((userData) => {
+        console.log(
+          'Never gonna give you up, never gonna let you down, never gonna say good bye'
+        );
+        console.log(userData);
+        this.userList = userData;
       });
   }
 
@@ -204,27 +204,27 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
   //   return Math.random() * (max - min) + min;
   // }
 
-  createDrawingRound(dataFromDrawingInput, authorId, data) {
+  createDrawingRound(dataFromDrawingInput, userId, data) {
     this.currentUserId = localStorage.getItem('currentUserId');
     //create Round
     this.currentDrawingRound = new DrawingRound(
       this.currentUserId,
+      userId,
       dataFromDrawingInput,
-      data,
-      authorId
+      data
     );
 
     return this.currentDrawingRound;
   }
 
-  createTextRound(dataFromTextInput, authorId, data) {
+  createTextRound(dataFromTextInput, userId, data) {
     this.currentUserId = localStorage.getItem('currentUserId');
     //create Round
     this.currentTextRound = new TextRound(
       this.currentUserId,
+      userId,
       dataFromTextInput,
-      data,
-      authorId
+      data
     );
 
     console.log('current text round');
@@ -254,7 +254,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
     this.drawingInputRef = this.ref;
   }
 
-  gameLogic() {
+  async gameLogic() {
     //drawing Round----------------------
 
     if (this.roundCounter % 2 == 0) {
@@ -272,15 +272,27 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
 
       console.log('2. got prev text');
       console.log(prevText);
-      let nextUserId = this.getNextUserId(
-        this.gamecode,
-        this.previouseRound.authorId
-      );
 
       console.log('Angular is ned geil');
-      console.log(nextUserId);
+      console.log(this.userList);
+      let index = 0;
+      for (let i = 0; i < this.userList.length; i++) {
+        if (this.userList[i] == this.previouseRound.userId) {
+          if (i + 1 == this.userList.length) {
+            index = 0;
+          } else {
+            index = i + 1;
+          }
+          break;
+        }
+      }
+
       //create Round
-      this.createDrawingRound(this.dataFromDrawingEditor, nextUserId, 'data');
+      this.createDrawingRound(
+        this.dataFromDrawingEditor,
+        this.userList[index],
+        'data'
+      );
       console.log('3. create drawing round');
 
       this.store.dispatch(new DrawingRoundState(prevText));
@@ -316,15 +328,23 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
 
         //TODO push on author array------------------>
 
-        let drawingRound = this.createDrawingRound(
-          this.dataFromDrawingEditor,
-          this.previouseRound.authorId,
-          'data'
+        // let drawingRound = this.createDrawingRound(
+        //   this.dataFromDrawingEditor,
+        //   this.previouseRound.authorId,
+        //   'data'
+        // );
+
+        this.currentDrawingRound.img = this.dataFromDrawingEditor;
+
+        console.log(
+          'I kissed a girl and i liked it. I hope my boyfriend won"t mind it'
         );
+        console.log(this.currentDrawingRound);
+
         this.dbService.saveImagesToRound(
           this.gamecode,
           this.previouseRound.authorId,
-          drawingRound,
+          this.currentDrawingRound,
           this.roundCounter.toString()
         );
 
@@ -412,10 +432,23 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
             this.previouseRound.authorId,
             'data'
           );
+
+          let index = 0;
+          for (let i = 0; i < this.userList.length; i++) {
+            if (this.userList[i] == this.previouseRound.userId) {
+              if (i + 1 == this.userList.length) {
+                index = 0;
+              } else {
+                index = i + 1;
+              }
+              break;
+            }
+          }
+
           console.log(textRound);
           this.dbService.saveTextsToRound(
             this.gamecode,
-            this.previouseRound.authorId,
+            this.userList[index],
             textRound,
             this.roundCounter.toString()
           );
