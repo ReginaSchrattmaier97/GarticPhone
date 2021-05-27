@@ -318,7 +318,8 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
           this.gamecode,
           this.previouseRound.authorId,
           this.dataFromDrawingEditor,
-          this.currentUserId
+          this.currentUserId,
+          this.roundCounter.toString()
         );
 
         //this.images.push(this.dataFromDrawingEditor);
@@ -402,7 +403,8 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
             this.gamecode,
             this.currentUserId,
             textRound,
-            this.currentUserId
+            this.currentUserId,
+            this.roundCounter.toString()
           )
         }
         else{
@@ -413,7 +415,8 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
           this.gamecode,
           this.previouseRound.authorId,
           textRound,
-          this.currentUserId
+          this.currentUserId,
+          this.roundCounter.toString()
         );
 
 

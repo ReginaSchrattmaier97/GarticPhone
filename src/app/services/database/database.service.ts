@@ -101,10 +101,11 @@ export class DatabaseService {
     gameid: String,
     authorId: String,
     drawingRound: DrawingRound,
-    userId: string
+    userId: string,
+    counter: string
   ) {
     const itemRef = this.db.list(
-      '/games/' + gameid + '/rounds/' + authorId
+      '/games/' + gameid + '/rounds/' + authorId + counter
     );
     return itemRef
       .set(userId, drawingRound)
@@ -120,14 +121,15 @@ export class DatabaseService {
     gameid: String,
     authorId: String,
     textRound: TextRound,
-    userId: string
+    userId: string,
+    counter:string,
   ) {
     const itemRef = this.db.list(
-      '/games/' + gameid + '/rounds/' + authorId
+      '/games/' + gameid + '/rounds/' + authorId + counter
     );
 
     return itemRef
-      .set(userId, textRound)
+      .set(counter, textRound)
       .then(() => {
         console.log('saved Text Round');
       })
