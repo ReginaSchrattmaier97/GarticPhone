@@ -99,12 +99,12 @@ export class DatabaseService {
 
   public saveImagesToRound(
     gameid: String,
-    roundCounter: number,
+    authorId: String,
     drawingRound: DrawingRound,
     userId: string
   ) {
     const itemRef = this.db.list(
-      '/games/' + gameid + '/rounds/' + roundCounter + '/drawingRounds/'
+      '/games/' + gameid + '/rounds/' + authorId + '/drawingRounds/'
     );
     return itemRef
       .set(userId, drawingRound)
@@ -118,12 +118,12 @@ export class DatabaseService {
 
   public saveTextsToRound(
     gameid: String,
-    roundCounter: number,
+    authorId: String,
     textRound: TextRound,
     userId: string
   ) {
     const itemRef = this.db.list(
-      '/games/' + gameid + '/rounds/' + roundCounter + '/textRounds/'
+      '/games/' + gameid + '/rounds/' + authorId + '/textRounds/'
     );
 
     return itemRef
@@ -138,10 +138,10 @@ export class DatabaseService {
 
   public getTextsofRound(
     gameid: String,
-    roundCounter: number
+    authorId: String
   ): Promise<Array<TextRound>> {
     const itemRef = this.db
-      .list('/games/' + gameid + '/rounds/' + roundCounter + '/textRounds/')
+      .list('/games/' + gameid + '/rounds/' + authorId + '/textRounds/')
       .snapshotChanges()
       .forEach((textSnapshot) => {
         this.textList = [];
@@ -158,9 +158,9 @@ export class DatabaseService {
     return this.textList;
   }
 
-  public getImagesofRound(gameid: String, roundCounter: number) {
+  public getImagesofRound(gameid: String, authorId: number) {
     const itemRef = this.db
-      .list('/games/' + gameid + '/rounds/' + roundCounter + '/drawingRounds/')
+      .list('/games/' + gameid + '/rounds/' + authorId + '/drawingRounds/')
       .snapshotChanges()
       .forEach((drawingSnapshot) => {
         this.drawingList = [];
@@ -182,6 +182,33 @@ export class DatabaseService {
       })
       .catch((error) => {
         console.error(error + 'no game created');
+      });
+  }
+
+
+  public saveInputsInAlbumOfUser(input:String, authorId:String){
+    const itemRef = this.db.object('/users/' + authorId + '/album/');
+    return itemRef
+      .set(input)
+      .then(() => {
+        console.log('created new Game');
+      })
+      .catch((error) => {
+        console.error(error + 'no game created');
+      });
+
+  }
+
+
+  public addGameMasterToGame(gameid: String): Promise<void> {
+    const itemRef = this.db.object('/games/' + gameid + '/users/' + gameid);
+    return itemRef
+      .set(gameid)
+      .then(() => {
+        console.log('game master added');
+      })
+      .catch((error) => {
+        console.error(error + 'no game master added');
       });
   }
 

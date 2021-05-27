@@ -15,10 +15,17 @@ export class FinishGame {
   static readonly type = '[Game] FinishGame';
 }
 
-export class TextRound {
+export class TextRoundState {
   static readonly type = '[Game] TextRound';
+  constructor(public readonly payload: String){}
 }
 
-export class DrawingRound {
+export class DrawingRoundState {
   static readonly type = '[Game] DrawingRound';
+  constructor(public readonly payload: String){}
+}
+
+export class StartFirstRound {
+  static readonly type = '[Game] startFirstRound';
+  constructor(public readonly payload: String){}
 }

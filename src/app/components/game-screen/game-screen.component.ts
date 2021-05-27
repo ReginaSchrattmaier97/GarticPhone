@@ -20,6 +20,9 @@ import { GameHostDirective } from 'src/app/directives/game-host.directive';
 import { ComponentRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { ElementRef } from '@angular/core';
+import { DrawingRoundState, StartFirstRound, TextRoundState } from 'src/app/store/game/game.actions';
+import { Store } from '@ngxs/store'
+
 
 @Component({
   selector: 'app-game-screen',
@@ -47,6 +50,8 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
   resultList;
   userList;
 
+  authorID;
+
   ref: ComponentRef<any>;
 
   //controll variables
@@ -57,7 +62,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
   firstRound = true;
 
   //init
-  initRound: TextRound;
+  //initRound: TextRound;
   previouseRound: Round;
   currentDrawingRound: DrawingRound;
   currentTextRound: TextRound;
@@ -73,13 +78,15 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
 
   public rounds: Round[] = []; //Array with Rounds
 
+
   constructor(
     private authService: AuthenticationService,
     private dbService: DatabaseService,
     private router: ActivatedRoute,
     private router2: Router,
     private componentFactoryResolver: ComponentFactoryResolver,
-    private el: ElementRef
+    private el: ElementRef,
+    private store:Store,
   ) {}
 
   ngOnInit(): void {
@@ -211,6 +218,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
     this.currentTextRound = new TextRound(
       this.currentUserId,
       dataFromTextInput,
+      '',
       ''
     );
 
@@ -247,6 +255,8 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
     //drawing Round----------------------
 
     if (this.roundCounter % 2 == 0) {
+
+
       //update variables for view
       this.isTextRound = false;
       this.isDrawingRound = true;
@@ -271,12 +281,14 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
       this.createDrawingRound();
       console.log('3. create drawing round');
 
+      this.store.dispatch(new DrawingRoundState(prevText));
+
       //set Text of previouse Round for view
       if (!prevText) {
         this.currentDrawingRound.data = 'no input of user happened :(';
       } else {
         this.currentDrawingRound.data = prevText.toString();
-        this.currentDrawingRound.authorId = this.previouseRound.authorId;
+        //this.currentDrawingRound.authorId = this.previouseRound.authorId;
       }
       console.log('4. set prev text');
 
@@ -303,7 +315,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
         //this.rounds.push(this.currentDrawingRound);
         this.dbService.saveImagesToRound(
           this.gamecode,
-          this.roundCounter,
+          this.previouseRound.authorId,
           this.dataFromDrawingEditor,
           this.currentUserId
         );
@@ -337,17 +349,17 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
 
     //Text Round --------------------------------
     else {
+
       // if not first round get previos round data
       if (this.roundCounter != 1) {
         console.log('not in first round');
         this.firstRound = false;
         this.currentTextRound.data = this.previouseRound.data;
+
+        this.store.dispatch(new TextRoundState(this.currentTextRound.data));
         //this.currentTextRound.authorId = this.previouseRound.authorId;
       }
 
-      if(this.roundCounter == 1){
-        this.currentTextRound.authorId = this.currentUserId;
-      }
 
       this.isTextRound = true;
       this.isDrawingRound = false;
@@ -367,17 +379,52 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
           this.dataFromTextInput = 'Draw anything you like';
         }
 
+
+
         //this.rounds.push(textRound);
 
         //TODO push on author array------------------>
         //save text in db for random function
+
+        console.log("here");
+        if(this.roundCounter == 1){
+          this.authorID = this.currentUserId;
+         // this.dbService.saveInputsInAlbumOfUser(this.dataFromTextInput, this.authorID);
+          console.log("here1");
+          console.log(this.dataFromTextInput);
+          this.store.dispatch(new StartFirstRound(this.dataFromTextInput))
+          //this.currentTextRound.authorId = this.currentUserId;
+
+          let textRound = this.createTextRound(this.dataFromTextInput);
+          console.log(textRound);
+          this.dbService.saveTextsToRound(
+            this.gamecode,
+            this.currentUserId,
+            textRound,
+            this.currentUserId
+          )
+        }
+        else{
+          console.log(this.createTextRound(this.dataFromTextInput));
         let textRound = this.createTextRound(this.dataFromTextInput);
+        console.log(textRound);
         this.dbService.saveTextsToRound(
           this.gamecode,
-          this.roundCounter,
+          this.previouseRound.authorId,
           textRound,
           this.currentUserId
         );
+
+
+        }
+
+
+
+
+        console.log("here");
+
+
+
 
         //this.textinputs.push(this.dataFromTextInput);
 

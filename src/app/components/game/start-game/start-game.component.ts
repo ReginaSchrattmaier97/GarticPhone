@@ -39,6 +39,9 @@ export class StartGameComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.dbService.addGameMasterToGame(this.gamecode);
+
+
     // this.gamecode = this.activatedRoute.snapshot.params.id;
     // this.userService.getJoinedUsers(this.gamecode);
     // this.dbService.db
@@ -64,6 +67,7 @@ export class StartGameComponent implements OnInit {
 
   startGame() {
     this.store.dispatch(new StartGame());
+    this.dbService.updateGameStatus(this.gamecode);
     this.router.navigate([`gamescreen/${this.gamecode}`]);
   }
 

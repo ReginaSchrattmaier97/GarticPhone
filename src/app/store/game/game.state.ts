@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import * as gameActions from './game.actions';
 import { CreateGameService } from 'src/app/services/create-game/create-game.service';
 import { DatabaseService } from 'src/app/services/database/database.service';
+import { DrawingRoundState, StartFirstRound, TextRoundState } from "./game.actions";
 
 
 
@@ -15,6 +16,11 @@ export interface GamesStateModel {
   finished: boolean;
   drawingstate: boolean;
   textstate:boolean;
+  inputText: String;
+  inputImage: String;
+  startText: String;
+  //roundNumber: number;
+  //firstRound: boolean;
 }
 
 @State<GamesStateModel>({
@@ -24,7 +30,10 @@ export interface GamesStateModel {
     textstate: true,
     created:false,
     started:false,
-    finished:false
+    finished:false,
+    inputText: '',
+    inputImage:'',
+    startText:'User added no start text',
 }
 })
 
@@ -43,6 +52,19 @@ export class GameState {
 public gamecode = this.activatedRoute.snapshot.params.id;
 
 
+
+@Selector()
+  static isDrawingRound(state: GamesStateModel) {
+    return state.drawingstate;
+  }
+
+
+  @Selector()
+  static isTextRound(state: GamesStateModel) {
+    return state.textstate;
+  }
+
+
 @Action( gameActions.CreateGame)
 createGame({ patchState }: StateContext<GamesStateModel>) {
   patchState({ created: true });
@@ -53,7 +75,6 @@ createGame({ patchState }: StateContext<GamesStateModel>) {
 @Action( gameActions.StartGame)
 startGame({ patchState }: StateContext<GamesStateModel>) {
   patchState({ started: true });
-  this.dbService.updateGameStatus(this.gamecode);
 }
 
 
@@ -64,22 +85,34 @@ finishGame({ patchState }: StateContext<GamesStateModel>){
 }
 
 
-@Action(gameActions.TextRound)
-textRound({ patchState }: StateContext<GamesStateModel>){
+@Action(gameActions.TextRoundState)
+textRound({ patchState }: StateContext<GamesStateModel>,  { payload }:TextRoundState){
   patchState({
-    drawingstate:true,
-    textstate: true
+    drawingstate:false,
+    textstate: true,
+    inputText: payload,
   });
 }
 
 
-@Action(gameActions.DrawingRound)
-drawingRound({ patchState }: StateContext<GamesStateModel>){
+@Action(gameActions.DrawingRoundState)
+drawingRound({ patchState }: StateContext<GamesStateModel>, { payload }:DrawingRoundState ){
   patchState({
     textstate: false,
-    drawingstate: true
+    drawingstate: true,
+    inputImage: payload,
   });
 }
+
+ @Action(gameActions.StartFirstRound)
+  startFirstRound({ patchState }: StateContext<GamesStateModel>,  { payload }: StartFirstRound){
+  patchState({
+  startText: payload
+  });
+
+
+}
+
 
 }
 
