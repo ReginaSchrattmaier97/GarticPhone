@@ -98,8 +98,8 @@ export class DatabaseService {
   }
 
   public saveImagesToRound(
-    gameid: String,
-    authorId: String,
+    gameid: string,
+    authorId: string,
     drawingRound: DrawingRound,
     userId: string,
     counter: string
@@ -108,7 +108,7 @@ export class DatabaseService {
       '/games/' + gameid + '/rounds/' + authorId + counter
     );
     return itemRef
-      .set(userId, drawingRound)
+      .set(counter, drawingRound)
       .then(() => {
         console.log('saved drawing Round');
       })
@@ -118,8 +118,8 @@ export class DatabaseService {
   }
 
   public saveTextsToRound(
-    gameid: String,
-    authorId: String,
+    gameid: string,
+    authorId: string,
     textRound: TextRound,
     userId: string,
     counter:string,

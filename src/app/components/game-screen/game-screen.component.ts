@@ -206,7 +206,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
     //create Round
     this.currentDrawingRound = new DrawingRound(
       this.currentUserId,
-      this.dataFromDrawingEditor,
+      dataFromDrawingInput,
       '',
       ''
     );
