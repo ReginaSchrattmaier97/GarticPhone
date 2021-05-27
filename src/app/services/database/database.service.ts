@@ -104,7 +104,7 @@ export class DatabaseService {
     userId: string
   ) {
     const itemRef = this.db.list(
-      '/games/' + gameid + '/rounds/' + authorId + '/drawingRounds/'
+      '/games/' + gameid + '/rounds/' + authorId
     );
     return itemRef
       .set(userId, drawingRound)
@@ -123,7 +123,7 @@ export class DatabaseService {
     userId: string
   ) {
     const itemRef = this.db.list(
-      '/games/' + gameid + '/rounds/' + authorId + '/textRounds/'
+      '/games/' + gameid + '/rounds/' + authorId
     );
 
     return itemRef
@@ -141,7 +141,7 @@ export class DatabaseService {
     authorId: String
   ): Promise<Array<TextRound>> {
     const itemRef = this.db
-      .list('/games/' + gameid + '/rounds/' + authorId + '/textRounds/')
+      .list('/games/' + gameid + '/rounds/' + authorId )
       .snapshotChanges()
       .forEach((textSnapshot) => {
         this.textList = [];

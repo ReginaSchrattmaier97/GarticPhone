@@ -201,14 +201,15 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
   //   return Math.random() * (max - min) + min;
   // }
 
-  createDrawingRound() {
+  createDrawingRound(dataFromDrawingInput) {
     this.currentUserId = localStorage.getItem('currentUserId');
     //create Round
     this.currentDrawingRound = new DrawingRound(
       this.currentUserId,
-      this.dataFromDrawingEditor
+      this.dataFromDrawingEditor,
+      '',
+      ''
     );
-
     return this.currentDrawingRound;
   }
 
@@ -278,7 +279,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
       console.log(prevText);
 
       //create Round
-      this.createDrawingRound();
+      this.createDrawingRound(this.dataFromDrawingEditor);
       console.log('3. create drawing round');
 
       this.store.dispatch(new DrawingRoundState(prevText));
