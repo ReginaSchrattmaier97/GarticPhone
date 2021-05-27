@@ -220,7 +220,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
       this.currentUserId,
       dataFromTextInput,
       '',
-      ''
+      '',
     );
 
     console.log('current text round');
@@ -314,10 +314,11 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
         //TODO push on author array------------------>
 
         //this.rounds.push(this.currentDrawingRound);
+        let drawingRound = this.createDrawingRound(this.dataFromDrawingEditor);
         this.dbService.saveImagesToRound(
           this.gamecode,
           this.previouseRound.authorId,
-          this.dataFromDrawingEditor,
+          drawingRound,
           this.currentUserId,
           this.roundCounter.toString()
         );
@@ -401,7 +402,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
           console.log(textRound);
           this.dbService.saveTextsToRound(
             this.gamecode,
-            this.currentUserId,
+            this.authorID,
             textRound,
             this.currentUserId,
             this.roundCounter.toString()
