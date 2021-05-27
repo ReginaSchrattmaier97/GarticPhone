@@ -50,7 +50,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
   resultList;
   userList;
 
-  authorID;
+  authorID:string;
 
   ref: ComponentRef<any>;
 
@@ -135,37 +135,37 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
       });
   }
 
-  getRandomText(
-    roundCounter: number,
-    gamecode: string,
-    nextUserId: string
-  ): Promise<String> {
-    const itemRef = this.dbService.db
-      .list(
-        '/games/' +
-          gamecode +
-          '/rounds/' +
-          roundCounter +
-          '/textRounds/' +
-          nextUserId
-      )
-      .snapshotChanges()
-      .forEach((textSnapshot) => {
-        this.textList = [];
-        textSnapshot.forEach((textSnapshot) => {
-          let text = textSnapshot.payload.toJSON();
-          console.log('text');
-          console.log(text);
-          this.textList.push(text);
-        });
-        console.log('this.textList');
-        console.log(this.textList);
-      });
+  // getRandomText(
+  //   roundCounter: number,
+  //   gamecode: string,
+  //   nextUserId: string
+  // ): Promise<String> {
+  //   const itemRef = this.dbService.db
+  //     .list(
+  //       '/games/' +
+  //         gamecode +
+  //         '/rounds/' +
+  //         roundCounter +
+  //         '/textRounds/' +
+  //         nextUserId
+  //     )
+  //     .snapshotChanges()
+  //     .forEach((textSnapshot) => {
+  //       this.textList = [];
+  //       textSnapshot.forEach((textSnapshot) => {
+  //         let text = textSnapshot.payload.toJSON();
+  //         console.log('text');
+  //         console.log(text);
+  //         this.textList.push(text);
+  //       });
+  //       console.log('this.textList');
+  //       console.log(this.textList);
+  //     });
 
-    return this.textList;
+  //   return this.textList;
 
-    //const texts = await this.dbService.getTextsofRound(gamecode, roundCounter);
-  }
+  //   //const texts = await this.dbService.getTextsofRound(gamecode, roundCounter);
+  // }
 
   getAllResults(gamecode: string) {
     const itemRef = this.dbService.db
@@ -268,11 +268,8 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
       this.roundChanged.emit();
 
 
-      let prevText = await this.getRandomText(
-        this.roundCounter - 1,
-        this.gamecode,
-        this.currentUserId
-      );
+      let prevText = "prevText";
+
       console.log('2. got prev text');
       console.log(prevText);
 
@@ -286,7 +283,9 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
       if (!prevText) {
         this.currentDrawingRound.data = 'no input of user happened :(';
       } else {
-        this.currentDrawingRound.data = prevText.toString();
+        console.log("this.currentDrawingRound");
+        console.log(this.currentDrawingRound);
+        this.currentDrawingRound.data = prevText;
       }
       console.log('4. set prev text');
 
@@ -316,7 +315,6 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
           this.gamecode,
           this.previouseRound.authorId,
           drawingRound,
-          this.currentUserId,
           this.roundCounter.toString()
         );
 
@@ -373,8 +371,14 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
 
 
         if(this.roundCounter == 1){
-          this.authorID = this.currentUserId;
-          this.store.dispatch(new StartFirstRound(this.dataFromTextInput))
+          console.log("in first round");
+          this.currentUserId.then((result)=>{
+
+            console.log("then");
+            console.log(result);
+            this.authorID = result.toString();
+
+            this.store.dispatch(new StartFirstRound(this.dataFromTextInput))
 
           let textRound = this.createTextRound(this.dataFromTextInput,this.authorID, 'data');
           console.log(textRound);
@@ -382,9 +386,11 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
             this.gamecode,
             this.authorID,
             textRound,
-            this.currentUserId,
             this.roundCounter.toString()
           )
+          })
+          //this.authorID = localStorage.getItem('currentUserId');
+
         }
         else{
 
@@ -394,7 +400,6 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
           this.gamecode,
           this.previouseRound.authorId,
           textRound,
-          this.currentUserId,
           this.roundCounter.toString()
         );
 

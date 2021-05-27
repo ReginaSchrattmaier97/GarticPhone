@@ -101,7 +101,6 @@ export class DatabaseService {
     gameid: string,
     authorId: string,
     drawingRound: DrawingRound,
-    userId: string,
     counter: string
   ) {
     const itemRef = this.db.list(
@@ -121,7 +120,6 @@ export class DatabaseService {
     gameid: string,
     authorId: string,
     textRound: TextRound,
-    userId: string,
     counter:string,
   ) {
     const itemRef = this.db.list(
