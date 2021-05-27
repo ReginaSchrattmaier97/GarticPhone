@@ -31,7 +31,7 @@ export class GameState {
 
   }
 
-  public gamecode = this.activatedRoute.snapshot.params.id;
+public gamecode = this.activatedRoute.snapshot.params.id;
 
 
 @Action( gameActions.CreateGame)
@@ -44,19 +44,14 @@ createGame({ patchState }: StateContext<GamesStateModel>) {
 @Action( gameActions.StartGame)
 startGame({ patchState }: StateContext<GamesStateModel>) {
   patchState({ started: true });
-  this.gamecode =
   this.dbService.updateGameStatus(this.gamecode);
 }
 
 
 
-@Action( gameActions.FinishGame)
-finishGame(ctx: StateContext<GamesStateModel>){
-  const state = ctx.getState();
-  ctx.setState({
-    ...state,
-    finished: state.finished=true
-  });
+@Action(gameActions.FinishGame)
+finishGame({ patchState }: StateContext<GamesStateModel>){
+  patchState({ finished: true });
 }
 
 }

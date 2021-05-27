@@ -5,7 +5,8 @@ import { DatabaseService } from 'src/app/services/database/database.service';
 import { Output } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Store } from '@ngxs/store';
-import { JoinGame } from '../../../store/user/user.actions';
+import { AddUserToGame } from 'src/app/store/user/user.actions';
+
 
 @Component({
   selector: 'app-join-game',
@@ -34,7 +35,7 @@ export class JoinGameComponent implements OnInit {
   }
 
   joinGame(){
-    this.store.dispatch(new JoinGame(this.currentUserId));
+    this.store.dispatch(new AddUserToGame(this.currentUserId));
   }
 
   // async getGameId(gamecode) {

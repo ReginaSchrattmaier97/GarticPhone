@@ -3,7 +3,7 @@ import { Game } from "src/app/shared/types/game";
 
 export class CreateGame {
   static readonly type = '[Game] CreateGame';
-  constructor(public readonly payload: Game){}
+  constructor(public readonly payload: String){}
 }
 
 export class StartGame {

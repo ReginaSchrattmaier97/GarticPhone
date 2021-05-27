@@ -1,18 +1,26 @@
 import { Injectable } from "@angular/core";
-import { Action, State, StateContext } from "@ngxs/store";
+import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { DatabaseService } from "src/app/services/database/database.service";
 import * as userActions from './user.actions';
 import { ActivatedRoute, Router } from '@angular/router';
+import { state } from "@angular/animations";
+import { User } from "src/app/shared/types/user";
+import { AddUserToGame } from "./user.actions";
 
 
 export interface UserStateModel {
+  users: User[];
   joined: boolean;
-  started: boolean;
-  finished: boolean;
+  // started: boolean;
+  // finished: boolean;
 }
 
 @State<UserStateModel>({
-  name: 'userstate'
+  name: 'users',
+  defaults: {
+      users: [],
+      joined: false
+  }
 })
 
 @Injectable()
@@ -28,12 +36,25 @@ export class GameState {
   public gamecode = this.activatedRoute.snapshot.params.id;
 
 
-@Action( userActions.JoinGame)
-joinGame({ patchState }: StateContext<UserStateModel>) {
-  patchState({ joined: true });
-  //TODO Use payload load instead of local storage
-  this.dbService.addUserToGameById(localStorage.getItem('currentUserId'), this.gamecode);
+@Selector()
+getJoinedUsers(state: UserStateModel) {
+  console.log(state.users);
+  return state.users;
+}
+
+@Action( userActions.AddUserToGame)
+addUserToGame({ patchState, getState }: StateContext<UserStateModel>, { payload }:  AddUserToGame) {
+  const state = getState();
+  patchState({
+      users: [...state.users, payload],
+      joined:true
+  });
+  this.dbService.addUserToGameById(payload.id, this.gamecode);
   this.router.navigate([`/wait/${this.gamecode}`]);
 }
+
+
+
+
 
 }

@@ -4,6 +4,8 @@ import { JoinedUsersService } from 'src/app/services/joined-users/joined-users.s
 import { DatabaseService } from 'src/app/services/database/database.service';
 import { Store } from '@ngxs/store';
 import { StartGame } from '../../../store/game/game.actions';
+import { Observable } from 'rxjs';
+import { User } from 'src/app/shared/types/user';
 
 @Component({
   selector: 'app-start-game',
@@ -12,8 +14,9 @@ import { StartGame } from '../../../store/game/game.actions';
 })
 export class StartGameComponent implements OnInit {
   public gamecode;
-  joinedUsers;
-  allUsersInGame: Array<any>;
+  //joinedUsers;
+  joinedUsers: Observable<User>
+  //allUsersInGame: Array<any>;
 
   constructor(
     private router: Router,
@@ -23,27 +26,33 @@ export class StartGameComponent implements OnInit {
     private store: Store
   ) {
     this.gamecode = this.activatedRoute.snapshot.params.id;
-    this.allUsersInGame = [''];
+    //this.allUsersInGame = [''];
+
+    this.joinedUsers = this.store.select(state => state.users.users);
+    console.log(this.joinedUsers);
+
   }
 
+
+
   ngOnInit(): void {
-    this.gamecode = this.activatedRoute.snapshot.params.id;
-    this.userService.getJoinedUsers(this.gamecode);
-    this.dbService.db
-      .list('/games/' + this.gamecode + '/users/')
-      .valueChanges()
-      .subscribe((userData) => {
-        console.log(userData);
-        this.joinedUsers = userData;
-        for (let i = 0; i < userData.length; i++) {
-          this.dbService.db
-            .list('/users/' + userData[i])
-            .valueChanges()
-            .subscribe((res) => {
-              this.allUsersInGame.push(res);
-            });
-        }
-      });
+    // this.gamecode = this.activatedRoute.snapshot.params.id;
+    // this.userService.getJoinedUsers(this.gamecode);
+    // this.dbService.db
+    //   .list('/games/' + this.gamecode + '/users/')
+    //   .valueChanges()
+    //   .subscribe((userData) => {
+    //     console.log(userData);
+    //     this.joinedUsers = userData;
+    //     for (let i = 0; i < userData.length; i++) {
+    //       this.dbService.db
+    //         .list('/users/' + userData[i])
+    //         .valueChanges()
+    //         .subscribe((res) => {
+    //           this.allUsersInGame.push(res);
+    //         });
+    //     }
+    //   });
   }
 
   startGame() {
