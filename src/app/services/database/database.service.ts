@@ -90,11 +90,9 @@ export class DatabaseService {
 
   public getUserById(userid: String) {
     let userProperties;
-    let user:User
-    const itemRef = this.db
-      .list('/users/' + userid)
-      .snapshotChanges();
-       return itemRef;
+    let user: User;
+    const itemRef = this.db.list('/users/' + userid).snapshotChanges();
+    return itemRef;
   }
 
   public saveImagesToRound(
@@ -103,9 +101,7 @@ export class DatabaseService {
     drawingRound: DrawingRound,
     counter: string
   ) {
-    const itemRef = this.db.list(
-      '/games/' + gameid + '/rounds/' + authorId + counter
-    );
+    const itemRef = this.db.list('/games/' + gameid + '/rounds/' + authorId);
     return itemRef
       .set(counter, drawingRound)
       .then(() => {
@@ -120,11 +116,9 @@ export class DatabaseService {
     gameid: string,
     authorId: string,
     textRound: TextRound,
-    counter:string,
+    counter: string
   ) {
-    const itemRef = this.db.list(
-      '/games/' + gameid + '/rounds/' + authorId + counter
-    );
+    const itemRef = this.db.list('/games/' + gameid + '/rounds/' + authorId);
 
     return itemRef
       .set(counter, textRound)
@@ -141,7 +135,7 @@ export class DatabaseService {
     authorId: String
   ): Promise<Array<TextRound>> {
     const itemRef = this.db
-      .list('/games/' + gameid + '/rounds/' + authorId )
+      .list('/games/' + gameid + '/rounds/' + authorId)
       .snapshotChanges()
       .forEach((textSnapshot) => {
         this.textList = [];
@@ -185,8 +179,7 @@ export class DatabaseService {
       });
   }
 
-
-  public saveInputsInAlbumOfUser(input:String, authorId:String){
+  public saveInputsInAlbumOfUser(input: String, authorId: String) {
     const itemRef = this.db.object('/users/' + authorId + '/album/');
     return itemRef
       .set(input)
@@ -196,9 +189,7 @@ export class DatabaseService {
       .catch((error) => {
         console.error(error + 'no game created');
       });
-
   }
-
 
   public addGameMasterToGame(gameid: String): Promise<void> {
     const itemRef = this.db.object('/games/' + gameid + '/users/' + gameid);
