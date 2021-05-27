@@ -6,6 +6,6 @@ export class CreateUser{
 
 export class AddUserToGame{
   static readonly type = '[User] AddUserToGame';
-  constructor(public readonly payload: String, public readonly gamecode: String, public readonly user: User ){}
+  constructor(public readonly payload: String, public readonly gamecode: String){}
 }
 

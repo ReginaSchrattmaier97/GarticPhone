@@ -9,7 +9,7 @@ import { AddUserToGame } from "./user.actions";
 
 
 export interface UserStateModel {
-  users: User[];
+  users: String[];
   //joined: boolean;
   // started: boolean;
   // finished: boolean;
@@ -84,30 +84,14 @@ joinedUsers(gamecode:string){
 // }
 
 @Action( userActions.AddUserToGame)
-addUserToGame({ patchState, getState }: StateContext<UserStateModel>, { payload, gamecode, user }:  AddUserToGame) {
+addUserToGame({ patchState, getState }: StateContext<UserStateModel>, { payload, gamecode}:  AddUserToGame) {
   const state = getState();
   this.dbService.addUserToGameById(payload, gamecode);
-  this.dbService.getUserById(payload).subscribe((userData) => {
-    console.log(userData[0].payload.toJSON().toString());
-    this.joinedUser.imageUrl = userData[0].payload.toJSON().toString();
-    this.joinedUser.firstName= userData[2].payload.toJSON().toString();
-    this.joinedUser.id= userData[3].payload.toJSON().toString();
-    this.joinedUser.lastName= userData[4].payload.toJSON().toString();
-    //return this.joinedUser;
-    user=this.joinedUser;
-    console.log(user);
-});
-
-
   patchState({
-      users: [...state.users, user],
+      users: [...state.users, payload],
   });
 
   this.router.navigate([`/wait/${gamecode}`]);
 }
-
-
-
-
 
 }

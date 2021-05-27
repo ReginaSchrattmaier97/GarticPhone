@@ -12,5 +12,13 @@ export class StartGame {
 
 
 export class FinishGame {
-  static readonly type = '[Game] FinischGame';
+  static readonly type = '[Game] FinishGame';
+}
+
+export class TextRound {
+  static readonly type = '[Game] TextRound';
+}
+
+export class DrawingRound {
+  static readonly type = '[Game] DrawingRound';
 }

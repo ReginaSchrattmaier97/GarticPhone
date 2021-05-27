@@ -63,5 +63,23 @@ finishGame({ patchState }: StateContext<GamesStateModel>){
   patchState({ finished: true });
 }
 
+
+@Action(gameActions.TextRound)
+textRound({ patchState }: StateContext<GamesStateModel>){
+  patchState({
+    drawingstate:true,
+    textstate: true
+  });
+}
+
+
+@Action(gameActions.DrawingRound)
+drawingRound({ patchState }: StateContext<GamesStateModel>){
+  patchState({
+    textstate: false,
+    drawingstate: true
+  });
+}
+
 }
 
