@@ -207,8 +207,6 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
     this.currentDrawingRound = new DrawingRound(
       this.currentUserId,
       dataFromDrawingInput,
-      '',
-      ''
     );
     return this.currentDrawingRound;
   }
@@ -219,8 +217,6 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
     this.currentTextRound = new TextRound(
       this.currentUserId,
       dataFromTextInput,
-      '',
-      '',
     );
 
     console.log('current text round');
