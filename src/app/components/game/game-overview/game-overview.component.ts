@@ -33,7 +33,8 @@ export class GameOverviewComponent implements OnInit {
   }
 
   createGame() {
-    this.store.dispatch(new CreateGame(this.currentUserId));
+    //this.store.dispatch(new CreateGame(this.currentUserId));
+    this.dbService.createGame(this.currentUserId);
     this.router.navigate([`/start/${this.currentUserId}`]);
   }
 

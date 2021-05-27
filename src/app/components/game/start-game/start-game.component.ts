@@ -16,7 +16,7 @@ import { UserState } from 'src/app/store/user/user.states';
 export class StartGameComponent implements OnInit {
   public gamecode;
   //joinedUsers;
-  joinedUsers: Observable<User>
+  joinedUsers: Observable<User>;
   //allUsersInGame: Array<any>;
 
   constructor(
@@ -27,21 +27,17 @@ export class StartGameComponent implements OnInit {
     private store: Store
   ) {
     this.gamecode = this.activatedRoute.snapshot.params.id;
+    console.log(this.gamecode);
     //this.allUsersInGame = [''];
 
     // this.joinedUsers = this.store.select(state => state.users.users);
     // console.log(this.store.select(state => state.users.users));
 
     //@Select(UserState.joinedUsers(this.gamecode)) this.joinedUsers;
-
   }
 
-
-
   ngOnInit(): void {
-    this.dbService.addGameMasterToGame(this.gamecode);
-
-
+    this.dbService.addUserToGameById(this.gamecode, this.gamecode);
     // this.gamecode = this.activatedRoute.snapshot.params.id;
     // this.userService.getJoinedUsers(this.gamecode);
     // this.dbService.db
@@ -59,10 +55,6 @@ export class StartGameComponent implements OnInit {
     //         });
     //     }
     //   });
-
-
-
-
   }
 
   startGame() {

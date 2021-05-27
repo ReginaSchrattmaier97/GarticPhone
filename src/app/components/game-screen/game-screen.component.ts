@@ -131,6 +131,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
             } else {
               index = i + 1;
             }
+            break;
           }
         }
         return this.userList[index];
@@ -271,13 +272,15 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
 
       console.log('2. got prev text');
       console.log(prevText);
-
-      //create Round
-      this.createDrawingRound(
-        this.dataFromDrawingEditor,
-        this.previouseRound.authorId,
-        'data'
+      let nextUserId = this.getNextUserId(
+        this.gamecode,
+        this.previouseRound.authorId
       );
+
+      console.log('Angular is ned geil');
+      console.log(nextUserId);
+      //create Round
+      this.createDrawingRound(this.dataFromDrawingEditor, nextUserId, 'data');
       console.log('3. create drawing round');
 
       this.store.dispatch(new DrawingRoundState(prevText));
