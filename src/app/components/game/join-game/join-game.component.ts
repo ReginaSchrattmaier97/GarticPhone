@@ -34,8 +34,8 @@ export class JoinGameComponent implements OnInit {
     }
   }
 
-  joinGame(){
-    this.store.dispatch(new AddUserToGame(this.currentUserId));
+  joinGame(gamecode){
+    this.store.dispatch(new AddUserToGame(this.currentUserId, gamecode));
   }
 
   // async getGameId(gamecode) {
@@ -51,6 +51,10 @@ export class JoinGameComponent implements OnInit {
   //     console.log('No current user available');
   //   }
   // }
+
+  getUserById(gamecode) {
+
+  }
 
   // userJoinedFunc() {
   //   console.log(this.currentUserId + 'joined');
