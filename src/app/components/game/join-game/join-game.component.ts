@@ -6,6 +6,7 @@ import { Output } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Store } from '@ngxs/store';
 import { AddUserToGame } from 'src/app/store/user/user.actions';
+import { User } from 'src/app/shared/types/user';
 
 
 @Component({
@@ -16,6 +17,7 @@ import { AddUserToGame } from 'src/app/store/user/user.actions';
 export class JoinGameComponent implements OnInit {
   currentUserId;
   loggedIn: boolean = false;
+  user:User;
   @Output() userJoinedEvent = new EventEmitter<any>();
 
   constructor(
@@ -35,7 +37,7 @@ export class JoinGameComponent implements OnInit {
   }
 
   joinGame(gamecode){
-    this.store.dispatch(new AddUserToGame(this.currentUserId, gamecode));
+    this.store.dispatch(new AddUserToGame(this.currentUserId, gamecode, this.user));
   }
 
   // async getGameId(gamecode) {

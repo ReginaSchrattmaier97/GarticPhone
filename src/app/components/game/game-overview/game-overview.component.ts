@@ -4,6 +4,7 @@ import { CreateGameService } from 'src/app/services/create-game/create-game.serv
 import { Select, Store } from '@ngxs/store';
 import { CreateGame } from '../../../store/game/game.actions';
 import { Game } from 'src/app/shared/types/game';
+import { DatabaseService } from 'src/app/services/database/database.service';
 
 @Component({
   selector: 'app-game-overview',
@@ -16,7 +17,8 @@ export class GameOverviewComponent implements OnInit {
   constructor(
     private createGameService: CreateGameService,
     private router: Router,
-    private store: Store
+    private store: Store,
+    private dbService: DatabaseService
   ) {}
 
   ngOnInit(): void {
@@ -26,6 +28,8 @@ export class GameOverviewComponent implements OnInit {
     } else {
       this.loggedIn = false;
     }
+
+    this.dbService.getUserById(this.currentUserId);
   }
 
   createGame() {

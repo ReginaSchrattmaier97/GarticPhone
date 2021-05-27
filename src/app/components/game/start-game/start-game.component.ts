@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JoinedUsersService } from 'src/app/services/joined-users/joined-users.service';
 import { DatabaseService } from 'src/app/services/database/database.service';
-import { Store } from '@ngxs/store';
+import { Select, Store } from '@ngxs/store';
 import { StartGame } from '../../../store/game/game.actions';
 import { Observable } from 'rxjs';
 import { User } from 'src/app/shared/types/user';
+import { UserState } from 'src/app/store/user/user.states';
 
 @Component({
   selector: 'app-start-game',
@@ -28,8 +29,10 @@ export class StartGameComponent implements OnInit {
     this.gamecode = this.activatedRoute.snapshot.params.id;
     //this.allUsersInGame = [''];
 
-    this.joinedUsers = this.store.select(state => state.users.users);
-    console.log(this.joinedUsers);
+    // this.joinedUsers = this.store.select(state => state.users.users);
+    // console.log(this.store.select(state => state.users.users));
+
+    //@Select(UserState.joinedUsers(this.gamecode)) this.joinedUsers;
 
   }
 
@@ -53,6 +56,10 @@ export class StartGameComponent implements OnInit {
     //         });
     //     }
     //   });
+
+
+
+
   }
 
   startGame() {

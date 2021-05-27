@@ -12,11 +12,20 @@ import { DatabaseService } from 'src/app/services/database/database.service';
 export interface GamesStateModel {
   created: boolean;
   started: boolean;
-  finished: boolean
+  finished: boolean;
+  drawingstate: boolean;
+  textstate:boolean;
 }
 
 @State<GamesStateModel>({
-  name: 'gamestate'
+  name: 'gamestate',
+  defaults: {
+    drawingstate: false,
+    textstate: true,
+    created:false,
+    started:false,
+    finished:false
+}
 })
 
 @Injectable()

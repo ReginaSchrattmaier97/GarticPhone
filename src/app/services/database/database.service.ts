@@ -15,6 +15,7 @@ export class DatabaseService {
   public userList;
   public textList;
   public drawingList;
+  joinedUser: User;
 
   constructor(public db: AngularFireDatabase, private router: Router) {}
 
@@ -72,19 +73,28 @@ export class DatabaseService {
     return this.userList;
   }
 
+  // public getUserById(userid: String) {
+  //   const itemRef = this.db
+  //     .list('/users/' + userid)
+  //     .snapshotChanges()
+  //     .forEach((userSnapshot) => {
+  //       this.userList = [];
+  //       userSnapshot.forEach((userSnapshot) => {
+  //         let user = userSnapshot.payload.toJSON();
+  //         this.userList.push(user as User);
+  //         console.log('user' + user);
+  //         return user;
+  //       });
+  //     });
+  // }
+
   public getUserById(userid: String) {
+    let userProperties;
+    let user:User
     const itemRef = this.db
       .list('/users/' + userid)
-      .snapshotChanges()
-      .forEach((userSnapshot) => {
-        this.userList = [];
-        userSnapshot.forEach((userSnapshot) => {
-          let user = userSnapshot.payload.toJSON();
-          this.userList.push(user as User);
-          console.log('user' + user);
-          return user;
-        });
-      });
+      .snapshotChanges();
+       return itemRef;
   }
 
   public saveImagesToRound(
