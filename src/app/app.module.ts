@@ -31,6 +31,7 @@ import { TextInputComponent } from './components/text-input/text-input.component
 import { FinalPresentationComponent } from './components/game/final-presentation/final-presentation.component';
 import { GameScreenComponent } from './components/game-screen/game-screen.component';
 import { GameHostDirective } from './directives/game-host.directive';
+import { TimerComponent } from './components/timer/timer.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { GameHostDirective } from './directives/game-host.directive';
     FinalPresentationComponent,
     GameScreenComponent,
     GameHostDirective,
+    TimerComponent,
   ],
   imports: [
     BrowserModule,

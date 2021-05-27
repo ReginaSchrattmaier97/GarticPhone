@@ -20,6 +20,7 @@ import { GameHostDirective } from 'src/app/directives/game-host.directive';
 import { ComponentRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { ElementRef } from '@angular/core';
+import { TimerComponent } from '../timer/timer.component';
 
 @Component({
   selector: 'app-game-screen',
@@ -34,6 +35,8 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
   container: ViewContainerRef;
   @ViewChild('containerDraw', { read: ViewContainerRef })
   containerDraw: ViewContainerRef;
+  @ViewChild('containerTimer', { read: ViewContainerRef })
+  containerTimer: ViewContainerRef;
 
   //@ViewChild(GameHostDirective, {static: true}) appGameHost!: GameHostDirective;
 
@@ -48,6 +51,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
   userList;
 
   ref: ComponentRef<any>;
+  refTimer: ComponentRef<TimerComponent>;
 
   //controll variables
   roundNumber = 6;
@@ -55,12 +59,6 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
   isDrawingRound = false;
   isTextRound = true;
   firstRound = true;
-  timeLimit = 10;
-  timePassed = 0;
-  timeLeft = this.timeLimit;
-  timerInterval = null;
-
-  seconds: number;
 
   //init
   initRound: TextRound;
@@ -70,6 +68,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
 
   textInputRef: any;
   drawingInputRef: any;
+  timerInputRef: any;
   currentUserId;
   gamecode: string;
 
@@ -247,55 +246,15 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
     this.drawingInputRef = this.ref;
   }
 
-  formatTimeLeft(time) {
-    this.seconds = time % 60;
-    let secondsLeadingZero;
-    if (this.seconds < 10) {
-      secondsLeadingZero = `0${this.seconds}`;
-    } else if (this.seconds == 0) {
-      this.stopTimer();
+  loadTimerComponent() {
+    if (this.refTimer) {
+      this.refTimer.destroy();
     }
-    return `00:${secondsLeadingZero}`;
-  }
-
-  startTimer() {
-    this.formatTimeLeft(this.timeLeft);
-    this.timerInterval = setInterval(() => {
-      this.timePassed = this.timePassed += 1;
-      this.timeLeft = this.timeLimit - this.timePassed;
-      document.getElementById('base-timer-label').innerHTML =
-        this.formatTimeLeft(this.timeLeft);
-      this.setCircleDasharray();
-      if (this.timeLeft === 0) {
-        this.onTimesUp();
-      }
-    }, 1000);
-  }
-
-  stopTimer() {
-    setTimeout(() => {
-      this.timeLeft = this.timeLimit;
-      this.timerInterval = null;
-      this.timePassed = 0;
-      this.seconds = 0;
-    }, 1000);
-  }
-
-  onTimesUp() {
-    clearInterval(this.timerInterval);
-  }
-
-  calculateTimeFraction() {
-    return this.timeLeft / this.timeLimit;
-  }
-
-  setCircleDasharray() {
-    const circleDasharray = `${(this.calculateTimeFraction() * 283).toFixed(
-      0
-    )} 283`;
-    document
-      .getElementById('base-timer-path-remaining')
-      .setAttribute('stroke-dasharray', circleDasharray);
+    const factory =
+      this.componentFactoryResolver.resolveComponentFactory(TimerComponent);
+    this.refTimer = this.containerTimer.createComponent(factory);
+    this.refTimer.changeDetectorRef.detectChanges();
+    this.timerInputRef = this.refTimer;
   }
 
   async gameLogic() {
@@ -341,11 +300,12 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
 
       if (this.isDrawingRound) {
         this.loadDrawComponent();
+        this.loadTimerComponent();
         console.log('loaded Drawing Screen');
       }
 
       // user is drawing
-      this.startTimer();
+      this.timerInputRef.instance.startTimer();
       setTimeout(() => {
         //finished drawing
         console.log('5. drawing...');
@@ -382,6 +342,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
         }
         if (this.roundCounter == 7) {
           this.ref.destroy();
+          this.refTimer.destroy();
           console.log('done!!');
           this.getAllResults(this.gamecode);
           //this.getAllTexts(this.gamecode);
@@ -389,7 +350,6 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
           myTag = this.el.nativeElement.querySelector('li');
           myTag.classList.remove('hidden');
         }
-        this.stopTimer();
       }, 10000);
     }
 
@@ -411,9 +371,10 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
         //this.detachView(TextInputComponent);
         console.log(' in this.loadComponent');
         this.loadTextComponent();
+        this.loadTimerComponent();
         console.log(' loades componend');
       }
-      this.startTimer();
+      this.timerInputRef.instance.startTimer();
       setTimeout(() => {
         this.dataFromTextInput = this.textInputRef.instance.textInput;
         if (this.dataFromTextInput == null) {
@@ -453,7 +414,6 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
         if (this.roundCounter <= this.roundNumber) {
           this.gameLogic();
         }
-        this.stopTimer();
       }, 10000);
     }
   }
