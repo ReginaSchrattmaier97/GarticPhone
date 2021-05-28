@@ -1,11 +1,25 @@
 <mat-card class="container">
     <div class="text-center">
         <p class="mb-8">Game Screen</p>
+        <p *ngIf="isDrawingRound">{{previousData}}</p>
+        <p *ngIf="isTextRound"><img src="{{previousData}}"></p>
     </div>
+
     <div #container></div>
     <div #containerDraw></div>
-    <li *ngFor="let result of this.resultList" class="hidden">
-        <p class="ml-4">{{result}}</p>
-    </li>
-
+    <div *ngIf="isFinished">
+        <div *ngFor="let user of userList; let u = index">
+            <h2>Initial Round ID: {{user}}</h2>
+            <div *ngFor="let result of finalResults[u] let i = index">
+                <div *ngIf = "result">
+                <li class="list-none" *ngIf="i % 2 == 0">
+                    <p>{{finalResults[u][i]}}</p>
+                </li>
+                <li class="list-none" *ngIf="i % 2 == 1">
+                    <img src="{{finalResults[u][i]}}">
+                </li>
+            </div>
+            </div>
+        </div>
+    </div>
 </mat-card>
