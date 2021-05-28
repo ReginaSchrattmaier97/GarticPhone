@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./timer.component.scss'],
 })
 export class TimerComponent implements OnInit {
-  timeLimit = 8;
+  timeLimit = 30;
   timePassed = 0;
   timeLeft = this.timeLimit;
   timerInterval = null;
@@ -23,6 +23,8 @@ export class TimerComponent implements OnInit {
       secondsLeadingZero = `0${this.seconds}`;
     } else if (this.seconds == 0) {
       this.stopTimer();
+    } else {
+      secondsLeadingZero = this.seconds;
     }
     return `00:${secondsLeadingZero}`;
   }

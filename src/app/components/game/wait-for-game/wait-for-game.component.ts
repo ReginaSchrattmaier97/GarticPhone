@@ -19,7 +19,6 @@ export class WaitForGameComponent implements OnInit {
   @Output() userJoined = new EventEmitter<any>();
 
   constructor(
-    private juService: JoinedUsersService,
     private router: ActivatedRoute,
     private dbService: DatabaseService,
     private router1: Router

@@ -1,8 +1,7 @@
 <mat-card class="container">
     <div class="text-center">
-        <p class="mb-8">Game Screen</p>
         <p *ngIf="isDrawingRound">{{previousData}}</p>
-        <p *ngIf="isTextRound"><img src="{{previousData}}"></p>
+        <div class="bg-white" *ngIf="isTextRound"><img src="{{previousData}}"></div>
     </div>
 
     <div #container></div>
@@ -16,11 +15,12 @@
                 <li class="list-none" *ngIf="i % 2 == 0">
                     <p>{{finalResults[u][i]}}</p>
                 </li>
-                <li class="list-none" *ngIf="i % 2 == 1">
+                <li class="list-none bg-white" *ngIf="i % 2 == 1">
                     <img src="{{finalResults[u][i]}}">
                 </li>
             </div>
             </div>
         </div>
+        <button mat-raised-button  color="primary" (click)="deleteGame()">Finish Game</button>
     </div>
 </mat-card>

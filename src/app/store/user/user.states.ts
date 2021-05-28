@@ -43,7 +43,6 @@ export class UserState {
       .list('/games/' + gamecode + '/users/')
       .valueChanges()
       .subscribe((userData) => {
-        console.log(userData);
         this.joinedUsers1 = userData;
         for (let i = 0; i < userData.length; i++) {
           this.dbService.db
@@ -65,7 +64,6 @@ export class UserState {
   //   .list('/games/' + gamecode + '/users/')
   //   .valueChanges()
   //   .subscribe((userData) => {
-  //     console.log(userData);
   //     this.joinedUsers = userData;
   //     for (let i = 0; i < userData.length; i++) {
   //       this.dbService.db

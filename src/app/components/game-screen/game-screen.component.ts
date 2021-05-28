@@ -14,19 +14,14 @@ import { AuthenticationService } from 'src/app/services/authentication/authentic
 import { DatabaseService } from 'src/app/services/database/database.service';
 import { ActivatedRoute } from '@angular/router';
 import { Output } from '@angular/core';
-import { Observable } from 'rxjs';
-import { BehaviorSubject } from 'rxjs';
-import { GameHostDirective } from 'src/app/directives/game-host.directive';
 import { ComponentRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { ElementRef } from '@angular/core';
 import {
   DrawingRoundState,
   StartFirstRound,
   TextRoundState,
 } from 'src/app/store/game/game.actions';
 import { Store } from '@ngxs/store';
-import { map } from 'rxjs/operators';
 import { TimerComponent } from '../timer/timer.component';
 
 @Component({
@@ -44,37 +39,32 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
   containerDraw: ViewContainerRef;
   @ViewChild('containerTimer', { read: ViewContainerRef })
   containerTimer: ViewContainerRef;
-
-  //@ViewChild(GameHostDirective, {static: true}) appGameHost!: GameHostDirective;
-
   @Output() roundChanged = new EventEmitter<any>();
 
   //Data from Input
   dataFromDrawingEditor: any;
   dataFromTextInput: any;
 
-  textList;
-  resultList;
+  textList: Array<string>;
+  resultList: Array<string>;
   userList: any;
-  previousData;
-  resultOfGarticGame;
+  previousData: string;
+  resultOfGarticGame: any;
   finalResults: Array<Array<string>> = [];
-
   authorID: string;
 
   ref: ComponentRef<any>;
   refTimer: ComponentRef<TimerComponent>;
 
   //controll variables
-  roundNumber = 6;
-  roundCounter = 1;
-  isDrawingRound = false;
-  isTextRound = true;
-  firstRound = true;
+  roundNumber: number = 6;
+  roundCounter: number = 1;
+  isDrawingRound: boolean = false;
+  isTextRound: boolean = true;
+  firstRound: boolean = true;
   isFinished: boolean = false;
 
   //init
-  //initRound: TextRound;
   previouseRound: Round;
   currentDrawingRound: DrawingRound;
   currentTextRound: TextRound;
@@ -82,7 +72,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
   textInputRef: any;
   drawingInputRef: any;
   timerInputRef: any;
-  currentUserId;
+  currentUserId: any;
   gamecode: string;
 
   public rounds: Round[] = []; //Array with Rounds
@@ -91,9 +81,8 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
     private authService: AuthenticationService,
     private dbService: DatabaseService,
     private router: ActivatedRoute,
-    private router2: Router,
+    private commonRouter: Router,
     private componentFactoryResolver: ComponentFactoryResolver,
-    private el: ElementRef,
     private store: Store
   ) {}
 
@@ -106,115 +95,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     //game
-
     this.gameLogic();
-  }
-
-  getAllUserId(gamecode: string) {
-    this.dbService.db
-      .list('/games/' + gamecode + '/users/')
-      .valueChanges()
-      .subscribe((userData) => {
-        this.userList = userData;
-      });
-  }
-
-  async getAllResults(gamecode: string, authorid: string) {
-    await this.dbService.db.database
-      .ref('/games/' + gamecode + '/rounds/' + authorid)
-      .get()
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          this.resultOfGarticGame = snapshot.val();
-        }
-      });
-  }
-
-  async getPreviousText(gamecode: string, authorid: string, round: number) {
-    console.log('Previous text of: ' + authorid + ' with round:' + round);
-    await this.dbService.db.database
-      .ref('/games/' + gamecode + '/rounds/' + authorid + '/' + round + '/text')
-      .get()
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          this.previousData = snapshot.val();
-        }
-      });
-  }
-
-  async getPreviousImg(gamecode: string, authorid: string, round: number) {
-    console.log('Previous img of: ' + authorid + ' with round:' + round);
-    await this.dbService.db.database
-      .ref('/games/' + gamecode + '/rounds/' + authorid + '/' + round + '/img')
-      .get()
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          this.previousData = snapshot.val();
-        }
-      });
-  }
-
-  createDrawingRound(dataFromDrawingInput, authorId, data) {
-    this.currentUserId = localStorage.getItem('currentUserId');
-    //create Round
-    this.currentDrawingRound = new DrawingRound(
-      authorId,
-      this.currentUserId,
-      dataFromDrawingInput,
-      data
-    );
-
-    return this.currentDrawingRound;
-  }
-
-  createTextRound(dataFromTextInput, authorId, data) {
-    this.currentUserId = localStorage.getItem('currentUserId');
-    //create Round
-    this.currentTextRound = new TextRound(
-      authorId,
-      this.currentUserId,
-      dataFromTextInput,
-      data
-    );
-    return this.currentTextRound;
-  }
-
-  loadTextComponent() {
-    if (this.ref) {
-      this.ref.destroy();
-    }
-    const factory =
-      this.componentFactoryResolver.resolveComponentFactory(TextInputComponent);
-    this.ref = this.container.createComponent(factory);
-    this.ref.changeDetectorRef.detectChanges();
-    this.textInputRef = this.ref;
-  }
-
-  loadDrawComponent() {
-    if (this.ref) {
-      this.ref.destroy();
-    }
-    const factory = this.componentFactoryResolver.resolveComponentFactory(
-      DrawingEditorComponent
-    );
-    this.ref = this.containerDraw.createComponent(factory);
-    this.ref.changeDetectorRef.detectChanges();
-    this.drawingInputRef = this.ref;
-  }
-
-  loadTimerComponent() {
-    if (this.refTimer) {
-      this.refTimer.destroy();
-    }
-    const factory =
-      this.componentFactoryResolver.resolveComponentFactory(TimerComponent);
-    this.refTimer = this.containerTimer.createComponent(factory);
-    this.refTimer.changeDetectorRef.detectChanges();
-    this.timerInputRef = this.refTimer;
-  }
-
-  delay(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   async gameLogic() {
@@ -302,7 +183,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
           }
           this.isFinished = true;
         }
-      }, 10000);
+      }, 32000);
     }
 
     //Text Round --------------------------------
@@ -345,10 +226,6 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
         this.dataFromTextInput = this.textInputRef.instance.textInput;
         if (this.dataFromTextInput == null) {
         }
-
-        //TODO push on author array------------------>
-        //save text in db for random function
-
         if (this.roundCounter == 1) {
           await this.currentUserId.then(async (result) => {
             this.authorID = result.toString();
@@ -388,7 +265,117 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
         if (this.roundCounter <= this.roundNumber) {
           this.gameLogic();
         }
-      }, 10000);
+      }, 32000);
     }
+  }
+
+  getAllUserId(gamecode: string) {
+    this.dbService.db
+      .list('/games/' + gamecode + '/users/')
+      .valueChanges()
+      .subscribe((userData) => {
+        this.userList = userData;
+      });
+  }
+
+  async getAllResults(gamecode: string, authorid: string) {
+    await this.dbService.db.database
+      .ref('/games/' + gamecode + '/rounds/' + authorid)
+      .get()
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          this.resultOfGarticGame = snapshot.val();
+        }
+      });
+  }
+
+  async getPreviousText(gamecode: string, authorid: string, round: number) {
+    await this.dbService.db.database
+      .ref('/games/' + gamecode + '/rounds/' + authorid + '/' + round + '/text')
+      .get()
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          this.previousData = snapshot.val();
+        }
+      });
+  }
+
+  async getPreviousImg(gamecode: string, authorid: string, round: number) {
+    await this.dbService.db.database
+      .ref('/games/' + gamecode + '/rounds/' + authorid + '/' + round + '/img')
+      .get()
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          this.previousData = snapshot.val();
+        }
+      });
+  }
+
+  createDrawingRound(dataFromDrawingInput, authorId, data) {
+    this.currentUserId = localStorage.getItem('currentUserId');
+    //create Round
+    this.currentDrawingRound = new DrawingRound(
+      authorId,
+      this.currentUserId,
+      dataFromDrawingInput,
+      data
+    );
+
+    return this.currentDrawingRound;
+  }
+
+  createTextRound(dataFromTextInput, authorId, data) {
+    this.currentUserId = localStorage.getItem('currentUserId');
+    //create Round
+    this.currentTextRound = new TextRound(
+      authorId,
+      this.currentUserId,
+      dataFromTextInput,
+      data
+    );
+    return this.currentTextRound;
+  }
+
+  loadTextComponent() {
+    if (this.ref) {
+      this.ref.destroy();
+    }
+    const factory =
+      this.componentFactoryResolver.resolveComponentFactory(TextInputComponent);
+    this.ref = this.container.createComponent(factory);
+    this.ref.changeDetectorRef.detectChanges();
+    this.textInputRef = this.ref;
+  }
+
+  loadDrawComponent() {
+    if (this.ref) {
+      this.ref.destroy();
+    }
+    const factory = this.componentFactoryResolver.resolveComponentFactory(
+      DrawingEditorComponent
+    );
+    this.ref = this.containerDraw.createComponent(factory);
+    this.ref.changeDetectorRef.detectChanges();
+    this.drawingInputRef = this.ref;
+  }
+
+  loadTimerComponent() {
+    if (this.refTimer) {
+      this.refTimer.destroy();
+    }
+    const factory =
+      this.componentFactoryResolver.resolveComponentFactory(TimerComponent);
+    this.refTimer = this.containerTimer.createComponent(factory);
+    this.refTimer.changeDetectorRef.detectChanges();
+    this.timerInputRef = this.refTimer;
+  }
+
+  delay(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  deleteGame() {
+    this.dbService.deleteGameFromDB(this.gamecode);
+    this.commonRouter.navigate(['/home']);
   }
 }

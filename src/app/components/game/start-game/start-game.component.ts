@@ -15,9 +15,8 @@ import { UserState } from 'src/app/store/user/user.states';
 })
 export class StartGameComponent implements OnInit {
   public gamecode;
-  //joinedUsers;
-  joinedUsers: Observable<User>;
-  //allUsersInGame: Array<any>;
+  joinedUsers;
+  allUsersInGame: Array<any>;
 
   constructor(
     private router: Router,
@@ -27,34 +26,28 @@ export class StartGameComponent implements OnInit {
     private store: Store
   ) {
     this.gamecode = this.activatedRoute.snapshot.params.id;
-    console.log(this.gamecode);
-    //this.allUsersInGame = [''];
-
-    // this.joinedUsers = this.store.select(state => state.users.users);
-    // console.log(this.store.select(state => state.users.users));
-
-    //@Select(UserState.joinedUsers(this.gamecode)) this.joinedUsers;
+    this.allUsersInGame = [''];
+    this.joinedUsers = this.store.select((state) => state.users.users);
   }
 
   ngOnInit(): void {
     this.dbService.addUserToGameById(this.gamecode, this.gamecode);
-    // this.gamecode = this.activatedRoute.snapshot.params.id;
-    // this.userService.getJoinedUsers(this.gamecode);
-    // this.dbService.db
-    //   .list('/games/' + this.gamecode + '/users/')
-    //   .valueChanges()
-    //   .subscribe((userData) => {
-    //     console.log(userData);
-    //     this.joinedUsers = userData;
-    //     for (let i = 0; i < userData.length; i++) {
-    //       this.dbService.db
-    //         .list('/users/' + userData[i])
-    //         .valueChanges()
-    //         .subscribe((res) => {
-    //           this.allUsersInGame.push(res);
-    //         });
-    //     }
-    //   });
+    this.gamecode = this.activatedRoute.snapshot.params.id;
+    this.userService.getJoinedUsers(this.gamecode);
+    this.dbService.db
+      .list('/games/' + this.gamecode + '/users/')
+      .valueChanges()
+      .subscribe((userData) => {
+        this.joinedUsers = userData;
+        for (let i = 0; i < userData.length; i++) {
+          this.dbService.db
+            .list('/users/' + userData[i])
+            .valueChanges()
+            .subscribe((res) => {
+              this.allUsersInGame.push(res);
+            });
+        }
+      });
   }
 
   startGame() {

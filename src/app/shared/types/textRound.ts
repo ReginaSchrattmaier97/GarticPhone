@@ -6,6 +6,5 @@ export class TextRound implements Round {
     public userId: string,
     public text: string,
     public data?: string
-  ) //TODO add field assigned: boolean
-  {}
+  ) {}
 }
