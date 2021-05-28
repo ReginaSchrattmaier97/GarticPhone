@@ -15,6 +15,7 @@ export class DatabaseService {
   public userList;
   public textList;
   public drawingList;
+  joinedUser: User;
 
   constructor(public db: AngularFireDatabase, private router: Router) {}
 
@@ -72,32 +73,35 @@ export class DatabaseService {
     return this.userList;
   }
 
+  // public getUserById(userid: String) {
+  //   const itemRef = this.db
+  //     .list('/users/' + userid)
+  //     .snapshotChanges()
+  //     .forEach((userSnapshot) => {
+  //       this.userList = [];
+  //       userSnapshot.forEach((userSnapshot) => {
+  //         let user = userSnapshot.payload.toJSON();
+  //         this.userList.push(user as User);
+  //         console.log('user' + user);
+  //         return user;
+  //       });
+  //     });
+  // }
+
   public getUserById(userid: String) {
-    const itemRef = this.db
-      .list('/users/' + userid)
-      .snapshotChanges()
-      .forEach((userSnapshot) => {
-        this.userList = [];
-        userSnapshot.forEach((userSnapshot) => {
-          let user = userSnapshot.payload.toJSON();
-          this.userList.push(user as User);
-          console.log('user' + user);
-          return user;
-        });
-      });
+    const itemRef = this.db.list('/users/' + userid).snapshotChanges();
+    return itemRef;
   }
 
   public saveImagesToRound(
-    gameid: String,
-    roundCounter: number,
+    gameid: string,
+    authorId: string,
     drawingRound: DrawingRound,
-    userId: string
+    counter: string
   ) {
-    const itemRef = this.db.list(
-      '/games/' + gameid + '/rounds/' + roundCounter + '/drawingRounds/'
-    );
+    const itemRef = this.db.list('/games/' + gameid + '/rounds/' + authorId);
     return itemRef
-      .set(userId, drawingRound)
+      .set(counter, drawingRound)
       .then(() => {
         console.log('saved drawing Round');
       })
@@ -107,17 +111,15 @@ export class DatabaseService {
   }
 
   public saveTextsToRound(
-    gameid: String,
-    roundCounter: number,
+    gameid: string,
+    authorId: string,
     textRound: TextRound,
-    userId: string
+    counter: string
   ) {
-    const itemRef = this.db.list(
-      '/games/' + gameid + '/rounds/' + roundCounter + '/textRounds/'
-    );
+    const itemRef = this.db.list('/games/' + gameid + '/rounds/' + authorId);
 
     return itemRef
-      .set(userId, textRound)
+      .set(counter, textRound)
       .then(() => {
         console.log('saved Text Round');
       })
@@ -128,10 +130,10 @@ export class DatabaseService {
 
   public getTextsofRound(
     gameid: String,
-    roundCounter: number
+    authorId: String
   ): Promise<Array<TextRound>> {
     const itemRef = this.db
-      .list('/games/' + gameid + '/rounds/' + roundCounter + '/textRounds/')
+      .list('/games/' + gameid + '/rounds/' + authorId)
       .snapshotChanges()
       .forEach((textSnapshot) => {
         this.textList = [];
@@ -148,9 +150,9 @@ export class DatabaseService {
     return this.textList;
   }
 
-  public getImagesofRound(gameid: String, roundCounter: number) {
+  public getImagesofRound(gameid: String, authorId: number) {
     const itemRef = this.db
-      .list('/games/' + gameid + '/rounds/' + roundCounter + '/drawingRounds/')
+      .list('/games/' + gameid + '/rounds/' + authorId + '/drawingRounds/')
       .snapshotChanges()
       .forEach((drawingSnapshot) => {
         this.drawingList = [];
@@ -172,6 +174,30 @@ export class DatabaseService {
       })
       .catch((error) => {
         console.error(error + 'no game created');
+      });
+  }
+
+  public saveInputsInAlbumOfUser(input: String, authorId: String) {
+    const itemRef = this.db.object('/users/' + authorId + '/album/');
+    return itemRef
+      .set(input)
+      .then(() => {
+        console.log('created new Game');
+      })
+      .catch((error) => {
+        console.error(error + 'no game created');
+      });
+  }
+
+  public addGameMasterToGame(gameid: String): Promise<void> {
+    const itemRef = this.db.object('/games/' + gameid + '/users/' + gameid);
+    return itemRef
+      .set(gameid)
+      .then(() => {
+        console.log('game master added');
+      })
+      .catch((error) => {
+        console.error(error + 'no game master added');
       });
   }
 

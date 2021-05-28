@@ -7,7 +7,7 @@
         <p class="gameId">Gamecode: {{gamecode}}</p>
         <p>Players joined</p>
         <ul class="list-none">
-            <li *ngFor="let user of this.allUsersInGame" class="flex justify-center">
+            <li *ngFor="let user of joinedUsers" class="flex justify-center">
                 <img *ngIf="user[0]" class="avatar" src="{{user[0]}}">
                 <p class="ml-4">{{user[2]}}</p>
             </li>

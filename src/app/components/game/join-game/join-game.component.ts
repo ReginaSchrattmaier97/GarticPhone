@@ -4,6 +4,10 @@ import { AuthenticationService } from 'src/app/services/authentication/authentic
 import { DatabaseService } from 'src/app/services/database/database.service';
 import { Output } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Store } from '@ngxs/store';
+import { AddUserToGame } from 'src/app/store/user/user.actions';
+import { User } from 'src/app/shared/types/user';
+
 
 @Component({
   selector: 'app-join-game',
@@ -13,12 +17,14 @@ import { Observable } from 'rxjs';
 export class JoinGameComponent implements OnInit {
   currentUserId;
   loggedIn: boolean = false;
+  user:User;
   @Output() userJoinedEvent = new EventEmitter<any>();
 
   constructor(
     private dbService: DatabaseService,
     private router: Router,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private store: Store
   ) {}
 
   ngOnInit(): void {
@@ -30,25 +36,50 @@ export class JoinGameComponent implements OnInit {
     }
   }
 
-  async getGameId(gamecode) {
-    const userFirebase = await this.authService.isLoggedIn();
-    let id = '';
-    if (userFirebase) {
-      id = userFirebase.uid;
-      this.currentUserId = id.toString();
-      this.dbService.addUserToGameById(this.currentUserId, gamecode);
-      this.router.navigate([`/wait/${gamecode}`]);
-      this.userJoinedEvent.emit(this.userJoinedFunc());
-    } else {
-      console.log('No current user available');
-    }
+  joinGame(gamecode){
+
+    this.store.dispatch(new AddUserToGame(this.currentUserId, gamecode));
+
+    // this.dbService.getUserById(this.currentUserId).subscribe((userData) => {
+    //   let user:User;
+    //   console.log(userData[0].payload.toJSON().toString());
+    //   user.imageUrl = userData[0].payload.toJSON().toString();
+    //   user.firstName= userData[2].payload.toJSON().toString();
+    //   user.id= userData[3].payload.toJSON().toString();
+    //   user.lastName= userData[4].payload.toJSON().toString();
+    //   //return this.joinedUser;
+    //   console.log(user);
+
+    // });
+
+
+
   }
 
-  userJoinedFunc() {
-    console.log(this.currentUserId + 'joined');
-    let x = 'joined';
-    return x;
+
+  // async getGameId(gamecode) {
+  //   const userFirebase = await this.authService.isLoggedIn();
+  //   let id = '';
+  //   if (userFirebase) {
+  //     id = userFirebase.uid;
+  //     this.currentUserId = id.toString();
+  //     this.dbService.addUserToGameById(this.currentUserId, gamecode);
+  //     this.router.navigate([`/wait/${gamecode}`]);
+  //     this.userJoinedEvent.emit(this.userJoinedFunc());
+  //   } else {
+  //     console.log('No current user available');
+  //   }
+  // }
+
+  getUserById(gamecode) {
+
   }
+
+  // userJoinedFunc() {
+  //   console.log(this.currentUserId + 'joined');
+  //   let x = 'joined';
+  //   return x;
+  // }
 
   logIn() {
     this.router.navigate(['/login']);

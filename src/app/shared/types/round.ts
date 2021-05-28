@@ -1,5 +1,5 @@
-
 export interface Round {
-  userId: string,
-  data?: string,
+  authorId: string;
+  userId: string;
+  data?: string;
 }

@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DrawingEditorComponent } from './components/drawing-editor/drawing-editor.component';
@@ -32,6 +31,8 @@ import { FinalPresentationComponent } from './components/game/final-presentation
 import { GameScreenComponent } from './components/game-screen/game-screen.component';
 import { GameHostDirective } from './directives/game-host.directive';
 import { TimerComponent } from './components/timer/timer.component';
+import { UserState } from './store/user/user.states';
+import { GameState } from './store/game/game.state';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,7 @@ import { TimerComponent } from './components/timer/timer.component';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFirestoreModule,
-    NgxsModule.forRoot(),
+    NgxsModule.forRoot([UserState, GameState]),
     NgxsLoggerPluginModule.forRoot(),
     NgxsReduxDevtoolsPluginModule.forRoot(),
     BrowserAnimationsModule,

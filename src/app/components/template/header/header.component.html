@@ -1,9 +1,9 @@
 <div class=" justify-center flex header bg-purple-700">
-    <div *ngIf="this.currentUserId" else #elseBlock>
-        <p>{{this.currentUserId}} is logged in</p>
+    <div class="loggedIn" *ngIf="this.currentUserId" else #elseBlock>
+        <img *ngIf="userImage" class="avatar" src="{{userImage}}">
+        <p *ngIf="userName" class="m-0 pl-4 text-white">{{userName}} is logged in</p>
         <button mat-raised-button (click)="Logout()" color="primary">Logout</button>
     </div>
     <ng-template #elseBlock>Not logged in</ng-template>
-    <img class="logo" src="../../../../assets/images/logo.svg">
-    
+    <img class="logo" src="../../../../assets/images/logo.svg">   
 </div> 

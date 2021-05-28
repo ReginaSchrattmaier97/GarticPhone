@@ -5,7 +5,7 @@
             <input matInput type="text" placeholder="Game Code"  formControlName="gamecode" #gamecode>
             <mat-icon matSuffix class="material-icons-round"></mat-icon>
         </mat-form-field>
-        <button class="ml-4" mat-raised-button type="submit" color="primary" (click)="getGameId(gamecode.value)">Join</button>
+        <button class="ml-4" mat-raised-button type="submit" color="primary" (click)="joinGame(gamecode.value)">Join</button>
     </div>
 </mat-card>
 
