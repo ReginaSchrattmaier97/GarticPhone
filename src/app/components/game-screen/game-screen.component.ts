@@ -364,9 +364,6 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
           this.ref.destroy();
           console.log('done!!');
           this.getAllResults(this.gamecode);
-          let myTag;
-          myTag = this.el.nativeElement.querySelector('li');
-          myTag.classList.remove('hidden');
         }
       }, 10000);
     }
