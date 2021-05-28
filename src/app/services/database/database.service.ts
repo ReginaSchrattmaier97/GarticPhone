@@ -89,8 +89,6 @@ export class DatabaseService {
   // }
 
   public getUserById(userid: String) {
-    let userProperties;
-    let user: User;
     const itemRef = this.db.list('/users/' + userid).snapshotChanges();
     return itemRef;
   }

@@ -53,6 +53,7 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
   textList;
   resultList;
   userList: any;
+  previousData;
 
   authorID: string;
 
@@ -112,20 +113,6 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
   }
 
   getAllUserId(gamecode: string) {
-    // this.dbService.db
-    //   .list('/games/' + gamecode + '/users/')
-    //   .snapshotChanges()
-    //   .pipe(
-    //     map((userSnapshot) => {
-    //       return userSnapshot.map((userSnapshot) => {
-    //         const user = userSnapshot.payload.toJSON();
-    //         return { user };
-    //       });
-    //     })
-    //   )
-    //   .subscribe((data) => {
-    //     this.userList = data;
-    //   });
     this.dbService.db
       .list('/games/' + gamecode + '/users/')
       .valueChanges()
@@ -137,38 +124,6 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
         this.userList = userData;
       });
   }
-
-  // getRandomText(
-  //   roundCounter: number,
-  //   gamecode: string,
-  //   nextUserId: string
-  // ): Promise<String> {
-  //   const itemRef = this.dbService.db
-  //     .list(
-  //       '/games/' +
-  //         gamecode +
-  //         '/rounds/' +
-  //         roundCounter +
-  //         '/textRounds/' +
-  //         nextUserId
-  //     )
-  //     .snapshotChanges()
-  //     .forEach((textSnapshot) => {
-  //       this.textList = [];
-  //       textSnapshot.forEach((textSnapshot) => {
-  //         let text = textSnapshot.payload.toJSON();
-  //         console.log('text');
-  //         console.log(text);
-  //         this.textList.push(text);
-  //       });
-  //       console.log('this.textList');
-  //       console.log(this.textList);
-  //     });
-
-  //   return this.textList;
-
-  //   //const texts = await this.dbService.getTextsofRound(gamecode, roundCounter);
-  // }
 
   getAllResults(gamecode: string) {
     const itemRef = this.dbService.db
@@ -185,24 +140,31 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
       });
   }
 
-  getAllTexts(gamecode: string) {
-    const itemRef = this.dbService.db
-      .list('/games/' + gamecode + '/rounds/' + '/textRounds/')
-      .snapshotChanges()
-      .forEach((resultSnapshot) => {
-        this.resultList = [];
-        resultSnapshot.forEach((resultSnapshot) => {
-          let result = resultSnapshot.payload.toJSON();
-          this.resultList.push(result);
-        });
-        console.log('this.resultList');
-        console.log(this.resultList);
+  async getPreviousText(gamecode: string, authorid: string, round: number) {
+    await this.dbService.db.database
+      .ref('/games/' + gamecode + '/rounds/' + authorid + '/' + round + '/text')
+      .get()
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          this.previousData = snapshot.val();
+        } else {
+          console.log('No data available');
+        }
       });
   }
 
-  // getRandomArbitrary(min, max) {
-  //   return Math.random() * (max - min) + min;
-  // }
+  async getPreviousImg(gamecode: string, authorid: string, round: number) {
+    await this.dbService.db.database
+      .ref('/games/' + gamecode + '/rounds/' + authorid + '/' + round + '/img')
+      .get()
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          this.previousData = snapshot.val();
+        } else {
+          console.log('No data available');
+        }
+      });
+  }
 
   createDrawingRound(dataFromDrawingInput, authorId, data) {
     this.currentUserId = localStorage.getItem('currentUserId');
@@ -268,11 +230,6 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
       //roundChanged
       this.roundChanged.emit();
 
-      let prevText = 'prevText';
-
-      console.log('2. got prev text');
-      console.log(prevText);
-
       console.log('Angular is ned geil');
       console.log(this.userList);
       let index = 0;
@@ -287,11 +244,19 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
         }
       }
 
+      await this.getPreviousText(
+        this.gamecode,
+        this.userList[index],
+        this.roundCounter - 1
+      );
+      let prevText = this.previousData;
+      console.log('This is the text of the previous user');
+      console.log(prevText);
       //create Round
       this.createDrawingRound(
         this.dataFromDrawingEditor,
         this.userList[index],
-        'data'
+        prevText
       );
       console.log('3. create drawing round');
 
@@ -375,7 +340,8 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
       if (this.roundCounter != 1) {
         console.log('not in first round');
         this.firstRound = false;
-        //TODO FETCH LAST DATA
+
+        //TODO FETCH last data
         this.currentTextRound.data = this.previouseRound.data;
 
         this.store.dispatch(new TextRoundState(this.currentTextRound.data));
@@ -436,10 +402,20 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
               break;
             }
           }
+
+          await this.getPreviousImg(
+            this.gamecode,
+            this.userList[index],
+            this.roundCounter - 1
+          );
+          let prevImg = this.previousData;
+          console.log('This is the img of the previous user');
+          console.log(prevImg);
+
           let textRound = this.createTextRound(
             this.dataFromTextInput,
             this.userList[index],
-            'data'
+            prevImg
           );
 
           console.log(textRound);
