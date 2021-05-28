@@ -424,12 +424,6 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
 
           //this.authorID = localStorage.getItem('currentUserId');
         } else {
-          let textRound = this.createTextRound(
-            this.dataFromTextInput,
-            this.previouseRound.authorId,
-            'data'
-          );
-
           let index = 0;
           for (let i = 0; i < this.userList.length; i++) {
             if (this.userList[i] == this.previouseRound.userId) {
@@ -441,11 +435,16 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
               break;
             }
           }
+          let textRound = this.createTextRound(
+            this.dataFromTextInput,
+            this.userList[index],
+            'data'
+          );
 
           console.log(textRound);
           this.dbService.saveTextsToRound(
             this.gamecode,
-            this.userList[index],
+            this.authorID,
             textRound,
             this.roundCounter.toString()
           );
