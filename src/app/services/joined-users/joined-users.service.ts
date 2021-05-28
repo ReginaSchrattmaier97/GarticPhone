@@ -21,7 +21,6 @@ export class JoinedUsersService {
       .list('/games/' + gamecode + '/users/')
       .valueChanges()
       .subscribe((userData) => {
-        console.log(userData);
         return userData;
       });
     return ['test'];

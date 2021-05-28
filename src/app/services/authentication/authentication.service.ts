@@ -36,7 +36,6 @@ export class AuthenticationService {
   }
 
   SignUp(user) {
-    console.log('in signuo service');
     return this.firebaseAuth
       .createUserWithEmailAndPassword(user.email, user.password)
       .then(() => {
@@ -68,24 +67,15 @@ export class AuthenticationService {
     let id = '';
     if (userFirebase) {
       id = userFirebase.uid;
-      console.log(id.toString());
       return id.toString();
-    } else {
-      console.log('No current user available');
     }
   }
 
   async saveUserInDB(user) {
     const userFirebase = await this.isLoggedIn();
     if (userFirebase) {
-      console.log('logged In');
       user.id = userFirebase.uid;
-      console.log(user.id);
-
       this.dbService.saveUser(user);
-      console.log('saved in db');
-    } else {
-      // do something else
     }
   }
 }

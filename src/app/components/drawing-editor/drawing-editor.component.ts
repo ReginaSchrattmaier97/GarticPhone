@@ -82,9 +82,7 @@ export class DrawingEditorComponent implements AfterViewInit {
         };
         //store the drawn points with the color in a map
         this.map.set(currentPos, this.context.strokeStyle);
-        //console.log(this.map);
         this.drawOnCanvas(prevPos, currentPos);
-
         this.drawingChanged.emit(canvasEl.toDataURL());
       });
   }

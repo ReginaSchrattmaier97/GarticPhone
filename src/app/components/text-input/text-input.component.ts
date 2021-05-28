@@ -14,14 +14,11 @@ export class TextInputComponent implements OnInit {
 
   ngOnInit(): void {}
   setText(text) {
-    console.log(text);
     this.textInput = text;
     this.textOut = text;
-    console.log(this.textOut);
   }
 
   getText() {
-    console.log('getText called');
     return this.textOut;
   }
 }

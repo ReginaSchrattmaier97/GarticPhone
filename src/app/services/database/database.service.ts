@@ -20,7 +20,6 @@ export class DatabaseService {
   constructor(public db: AngularFireDatabase, private router: Router) {}
 
   public saveUser(user: User): Promise<void> {
-    console.log(user.id);
     const itemRef = this.db.object('/users/' + user.id);
     return itemRef
       .set(user)
@@ -139,14 +138,10 @@ export class DatabaseService {
         this.textList = [];
         textSnapshot.forEach((textSnapshot) => {
           let text = textSnapshot.payload.toJSON();
-          console.log('text');
-          console.log(text);
           this.textList.push(text);
         });
-        console.log(this.textList);
         return this.textList;
       });
-    console.log(this.textList);
     return this.textList;
   }
 
@@ -200,8 +195,4 @@ export class DatabaseService {
         console.error(error + 'no game master added');
       });
   }
-
-  //TODO
-  //--update TextRound --> update field assigned to user
-  //--update ImageRound --> update field assigned to user
 }

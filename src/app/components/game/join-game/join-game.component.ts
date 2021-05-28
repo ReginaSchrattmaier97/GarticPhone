@@ -8,7 +8,6 @@ import { Store } from '@ngxs/store';
 import { AddUserToGame } from 'src/app/store/user/user.actions';
 import { User } from 'src/app/shared/types/user';
 
-
 @Component({
   selector: 'app-join-game',
   templateUrl: './join-game.component.html',
@@ -17,7 +16,7 @@ import { User } from 'src/app/shared/types/user';
 export class JoinGameComponent implements OnInit {
   currentUserId;
   loggedIn: boolean = false;
-  user:User;
+  user: User;
   @Output() userJoinedEvent = new EventEmitter<any>();
 
   constructor(
@@ -36,26 +35,19 @@ export class JoinGameComponent implements OnInit {
     }
   }
 
-  joinGame(gamecode){
-
+  joinGame(gamecode) {
     this.store.dispatch(new AddUserToGame(this.currentUserId, gamecode));
 
     // this.dbService.getUserById(this.currentUserId).subscribe((userData) => {
     //   let user:User;
-    //   console.log(userData[0].payload.toJSON().toString());
     //   user.imageUrl = userData[0].payload.toJSON().toString();
     //   user.firstName= userData[2].payload.toJSON().toString();
     //   user.id= userData[3].payload.toJSON().toString();
     //   user.lastName= userData[4].payload.toJSON().toString();
     //   //return this.joinedUser;
-    //   console.log(user);
 
     // });
-
-
-
   }
-
 
   // async getGameId(gamecode) {
   //   const userFirebase = await this.authService.isLoggedIn();
@@ -71,12 +63,9 @@ export class JoinGameComponent implements OnInit {
   //   }
   // }
 
-  getUserById(gamecode) {
-
-  }
+  getUserById(gamecode) {}
 
   // userJoinedFunc() {
-  //   console.log(this.currentUserId + 'joined');
   //   let x = 'joined';
   //   return x;
   // }

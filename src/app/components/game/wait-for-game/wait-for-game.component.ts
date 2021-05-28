@@ -33,7 +33,6 @@ export class WaitForGameComponent implements OnInit {
       .list('/games/' + this.gamecode + '/users/')
       .valueChanges()
       .subscribe((userData) => {
-        console.log(userData);
         this.joinedUsers = userData;
         for (let i = 0; i < userData.length; i++) {
           this.dbService.db
@@ -44,15 +43,13 @@ export class WaitForGameComponent implements OnInit {
             });
         }
       });
-    console.log('yyyyyy');
     this.dbService.db
       .object('/games/' + this.gamecode + '/gameStarted/')
       .valueChanges()
       .subscribe((gameStarted) => {
-        if(gameStarted){
+        if (gameStarted) {
           this.router1.navigate([`gamescreen/${this.gamecode}`]);
         }
-
       });
   }
 }

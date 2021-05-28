@@ -149,8 +149,6 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
       .then((snapshot) => {
         if (snapshot.exists()) {
           this.resultOfGarticGame = snapshot.val();
-        } else {
-          console.log('No data available');
         }
       });
   }
@@ -162,8 +160,6 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
       .then((snapshot) => {
         if (snapshot.exists()) {
           this.previousData = snapshot.val();
-        } else {
-          console.log('No data available');
         }
       });
   }
@@ -175,8 +171,6 @@ export class GameScreenComponent implements OnInit, AfterViewInit {
       .then((snapshot) => {
         if (snapshot.exists()) {
           this.previousData = snapshot.val();
-        } else {
-          console.log('No data available');
         }
       });
   }
