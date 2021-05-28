@@ -64,7 +64,6 @@ export class StartGameComponent implements OnInit {
   }
 
   userJoinedGameFunc() {
-    console.log('user joined here');
     let x = 'joinedx';
     return x;
   }
